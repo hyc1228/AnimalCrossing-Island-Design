@@ -8,6 +8,17 @@
   #root {
     @apply h-full w-full;
   }
+  /* ------- AC-themed mouse cursor (the same illustration used as the
+     dropdown-hover indicator near the clock on the homepage) -------
+     We expose two cursor variables: `--ac-cursor` for the default arrow
+     and `--ac-cursor-pointer` for clickable elements. Both fall back to
+     the platform cursor on browsers / OSes that refuse SVG cursors.
+     Hotspot (12, 6) puts the active point near the top-left "tip" of the
+     leaf-style pointer artwork. */
+  :root {
+    --ac-cursor: url('/cursor-ac.svg') 12 6, auto;
+    --ac-cursor-pointer: url('/cursor-ac.svg') 12 6, pointer;
+  }
   body {
     @apply font-ac text-leaf-700 antialiased;
     /* Warm cream / sand background, very soft */
@@ -18,6 +29,56 @@
       linear-gradient(180deg, #fbf6e8 0%, #f6efd6 100%);
     min-height: 100vh;
     letter-spacing: 0.01em;
+    cursor: var(--ac-cursor);
+  }
+  /* Pointer variant for any clickable element. Inputs / textareas /
+     contenteditable keep their semantic carets — overridden below. */
+  a,
+  button,
+  summary,
+  label[for],
+  select,
+  [role='button'],
+  [role='link'],
+  [role='menuitem'],
+  [role='option'],
+  [role='tab'],
+  [type='button'],
+  [type='submit'],
+  [type='reset'],
+  [type='checkbox'],
+  [type='radio'],
+  [type='file'],
+  .cursor-pointer {
+    cursor: var(--ac-cursor-pointer);
+  }
+  /* Disabled controls keep the standard not-allowed cursor so users get
+     the expected feedback. */
+  button:disabled,
+  [aria-disabled='true'],
+  [disabled] {
+    cursor: not-allowed;
+  }
+  /* Text inputs keep the I-beam — the AC pointer would feel wrong inside
+     a text field. */
+  input:not([type='button']):not([type='submit']):not([type='reset']):not([type='checkbox']):not([type='radio']):not([type='file']),
+  textarea,
+  [contenteditable='true'] {
+    cursor: text;
+  }
+  /* On touch-only devices the cursor never shows, so skip the SVG fetch. */
+  @media (hover: none) and (pointer: coarse) {
+    body,
+    a,
+    button,
+    summary,
+    label[for],
+    select,
+    [role='button'],
+    [role='link'],
+    .cursor-pointer {
+      cursor: auto;
+    }
   }
   h1, h2, h3, h4 {
     @apply text-leaf-800;

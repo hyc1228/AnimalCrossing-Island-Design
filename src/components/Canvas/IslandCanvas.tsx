@@ -355,7 +355,10 @@ export default function IslandCanvas({ width, height }: IslandCanvasProps) {
     if (tool === 'pan') return 'grab';
     if (tool === 'place' || tool === 'terrain-brush' || tool === 'terrain-rect') return 'crosshair';
     if (tool === 'erase') return 'cell';
-    return 'default';
+    // Select tool: fall back to the page-wide AC themed cursor instead of the
+    // system arrow so the canvas feels visually consistent with the rest of
+    // the UI. CSS variable defined in src/index.css.
+    return 'var(--ac-cursor)';
   }, [tool]);
 
   const previewItem = useMemo(() => {
