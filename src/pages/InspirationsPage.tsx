@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ChevronLeft, Trash2, Wand2, Download, Image as ImageIcon, Search } from 'lucide-react';
+import { ChevronLeft, Trash2, Wand2, Download, Image as ImageIcon, Search, Tag as TagIcon, Plus, X as CloseIcon } from 'lucide-react';
 import {
   Button as AIButton,
   Card as AICard,
@@ -29,10 +29,44 @@ export default function InspirationsPage() {
   const items = useInspirationsStore((s) => s.items);
   const removeOne = useInspirationsStore((s) => s.remove);
   const clearAll = useInspirationsStore((s) => s.clear);
+  const setTags = useInspirationsStore((s) => s.setTags);
 
   const [detailId, setDetailId] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] = useState<SavedInspiration | null>(null);
   const [pendingClearAll, setPendingClearAll] = useState(false);
+
+  // Library filters.
+  const [search, setSearch] = useState('');
+  const [tagFilter, setTagFilter] = useState<string | null>(null);
+
+  // Collect all tags across inspirations + their counts for the filter row.
+  const allTags = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const it of items) {
+      for (const tag of it.tags ?? []) {
+        counts.set(tag, (counts.get(tag) ?? 0) + 1);
+      }
+    }
+    return Array.from(counts.entries()).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+  }, [items]);
+
+  // Apply text search (description / item names / notes) and tag filter.
+  const visibleItems = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return items.filter((it) => {
+      if (tagFilter && !(it.tags ?? []).includes(tagFilter)) return false;
+      if (!q) return true;
+      const hay = [
+        it.result.raw.description,
+        it.note ?? '',
+        ...it.result.items.flatMap((i) => [i.nameEn, i.matches[0]?.name ?? '']),
+        ...(it.tags ?? []),
+      ]
+        .join(' ')
+        .toLowerCase();
+      return hay.includes(q);
+    });
+  }, [items, search, tagFilter]);
 
   const locale =
     i18n.resolvedLanguage === 'ja' ? 'ja-JP' : i18n.resolvedLanguage === 'en' ? 'en-US' : 'zh-CN';
@@ -192,19 +226,103 @@ export default function InspirationsPage() {
           </AICard>
         ) : (
           <>
-            <AIDivider type="wave-yellow" style={{ marginBottom: 24 }} />
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {items.map((insp) => (
-                <InspirationCard
-                  key={insp.id}
-                  insp={insp}
-                  locale={locale}
-                  onOpen={() => setDetailId(insp.id)}
-                  onApply={() => applyInspiration(insp)}
-                  onDelete={() => setPendingDelete(insp)}
+            <AIDivider type="wave-yellow" style={{ marginBottom: 20 }} />
+
+            {/* Search + tag filter row */}
+            <div className="mb-5 flex flex-col gap-3">
+              <div className="relative max-w-md mx-auto w-full">
+                <Search
+                  size={14}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-leaf-500 pointer-events-none"
                 />
-              ))}
+                <input
+                  type="search"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder={t('inspirations.searchPlaceholder')}
+                  className="input w-full pl-9 text-sm py-2"
+                  style={{ borderWidth: 2 }}
+                />
+                {search && (
+                  <button
+                    onClick={() => setSearch('')}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 grid place-items-center rounded-full text-leaf-500 hover:bg-cream-100"
+                    title={t('common.close')}
+                  >
+                    <CloseIcon size={12} />
+                  </button>
+                )}
+              </div>
+
+              {allTags.length > 0 && (
+                <div className="flex items-center justify-center gap-1.5 flex-wrap text-xs">
+                  <button
+                    onClick={() => setTagFilter(null)}
+                    className={`px-2.5 py-1 rounded-full border-2 font-bold transition ${
+                      tagFilter === null
+                        ? 'border-mint-500 bg-mint-50 text-leaf-800'
+                        : 'border-cream-200 bg-white text-leaf-700 hover:border-mint-300'
+                    }`}
+                    style={tagFilter === null ? { boxShadow: '0 2px 0 0 #11a89b' } : undefined}
+                  >
+                    {t('inspirations.allTags')}
+                  </button>
+                  {allTags.map(([tag, count]) => {
+                    const active = tagFilter === tag;
+                    return (
+                      <button
+                        key={tag}
+                        onClick={() => setTagFilter(active ? null : tag)}
+                        className={`px-2.5 py-1 rounded-full border-2 font-bold transition inline-flex items-center gap-1 ${
+                          active
+                            ? 'border-mint-500 bg-mint-50 text-leaf-800'
+                            : 'border-cream-200 bg-white text-leaf-700 hover:border-mint-300'
+                        }`}
+                        style={active ? { boxShadow: '0 2px 0 0 #11a89b' } : undefined}
+                      >
+                        <TagIcon size={10} />
+                        {tag}
+                        <span className="opacity-60 font-mono text-[10px]">{count}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
+              <div className="text-center text-[11px] text-leaf-500">
+                {t('inspirations.shownCount', { shown: visibleItems.length, total: items.length })}
+              </div>
             </div>
+
+            {visibleItems.length === 0 ? (
+              <AICard className="!p-8 text-center max-w-md mx-auto">
+                <p className="text-sm text-leaf-700/85 leading-relaxed">
+                  {t('inspirations.noMatch')}
+                </p>
+                <button
+                  onClick={() => {
+                    setSearch('');
+                    setTagFilter(null);
+                  }}
+                  className="mt-3 text-xs font-bold text-mint-600 hover:text-mint-700"
+                >
+                  {t('inspirations.clearFilters')}
+                </button>
+              </AICard>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                {visibleItems.map((insp) => (
+                  <InspirationCard
+                    key={insp.id}
+                    insp={insp}
+                    locale={locale}
+                    onOpen={() => setDetailId(insp.id)}
+                    onApply={() => applyInspiration(insp)}
+                    onDelete={() => setPendingDelete(insp)}
+                  />
+                ))}
+              </div>
+            )}
           </>
         )}
       </main>
@@ -218,6 +336,7 @@ export default function InspirationsPage() {
         <InspirationDetailModal
           insp={detail}
           allInspirations={items}
+          knownTags={allTags.map(([t]) => t)}
           onClose={() => setDetailId(null)}
           onApply={() => {
             setDetailId(null);
@@ -229,6 +348,7 @@ export default function InspirationsPage() {
             setPendingDelete(detail);
           }}
           onOpenOther={(id) => setDetailId(id)}
+          onSaveTags={(tags) => setTags(detail.id, tags)}
         />
       )}
 
@@ -306,6 +426,22 @@ function InspirationCard({
       </button>
       <div className="p-3 flex flex-col gap-2 flex-1">
         <p className="text-xs text-leaf-700 leading-relaxed line-clamp-2">{result.raw.description}</p>
+        {(insp.tags ?? []).length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {(insp.tags ?? []).slice(0, 3).map((tag) => (
+              <span
+                key={tag}
+                className="px-1.5 py-0.5 rounded-full bg-cream-100 border border-cream-200 text-[9px] font-extrabold text-leaf-700 inline-flex items-center gap-0.5"
+              >
+                <TagIcon size={8} />
+                {tag}
+              </span>
+            ))}
+            {(insp.tags ?? []).length > 3 && (
+              <span className="text-[9px] text-leaf-500 font-bold">+{(insp.tags ?? []).length - 3}</span>
+            )}
+          </div>
+        )}
         <div className="flex items-center justify-between gap-2 mt-1">
           <span className="text-[11px] text-leaf-600">{saved}</span>
           <button
@@ -327,19 +463,23 @@ function InspirationCard({
 function InspirationDetailModal({
   insp,
   allInspirations,
+  knownTags,
   onClose,
   onApply,
   onExport,
   onDelete,
   onOpenOther,
+  onSaveTags,
 }: {
   insp: SavedInspiration;
   allInspirations: SavedInspiration[];
+  knownTags: string[];
   onClose: () => void;
   onApply: () => void;
   onExport: () => void;
   onDelete: () => void;
   onOpenOther: (id: string) => void;
+  onSaveTags: (tags: string[]) => void;
 }) {
   const { t } = useTranslation();
   const result = insp.result;
@@ -349,6 +489,24 @@ function InspirationDetailModal({
     () => findSimilar(insp, allInspirations, 4),
     [insp, allInspirations],
   );
+
+  // Tag editor state — initialized from the current entry and pushed back on
+  // every mutation so the user doesn't have to "save" explicitly.
+  const initialTags = insp.tags ?? [];
+  const [tagDraft, setTagDraft] = useState('');
+  const [tags, setLocalTags] = useState<string[]>(initialTags);
+  const commit = (next: string[]) => {
+    setLocalTags(next);
+    onSaveTags(next);
+  };
+  const addTag = (raw: string) => {
+    const v = raw.trim().toLowerCase();
+    if (!v || v.length > 24 || tags.includes(v) || tags.length >= 8) return;
+    commit([...tags, v]);
+    setTagDraft('');
+  };
+  const removeTag = (tag: string) => commit(tags.filter((x) => x !== tag));
+  const suggestions = knownTags.filter((kt) => !tags.includes(kt)).slice(0, 8);
 
   return (
     <AIModal
@@ -383,6 +541,73 @@ function InspirationDetailModal({
             {t('recognize.densityChip', { density: densityLabel(result.raw.density as DensityCode) })}
           </span>
           {result.raw.description}
+        </div>
+
+        {/* Tag editor */}
+        <div>
+          <div className="flex items-center gap-1.5 text-xs font-extrabold text-leaf-800 mb-1.5">
+            <TagIcon size={12} className="text-mint-500" />
+            {t('inspirations.tagsTitle')}
+          </div>
+          <div className="flex flex-wrap gap-1.5 items-center">
+            {tags.map((tag) => (
+              <span
+                key={tag}
+                className="inline-flex items-center gap-1 pl-2 pr-1 py-0.5 rounded-full bg-mint-50 border-2 border-mint-300 text-[11px] font-extrabold text-leaf-800"
+              >
+                {tag}
+                <button
+                  onClick={() => removeTag(tag)}
+                  className="w-4 h-4 grid place-items-center rounded-full hover:bg-mint-200 text-leaf-700"
+                  title={t('common.delete')}
+                >
+                  <CloseIcon size={10} />
+                </button>
+              </span>
+            ))}
+            {tags.length < 8 && (
+              <div className="inline-flex items-center gap-1">
+                <input
+                  type="text"
+                  value={tagDraft}
+                  onChange={(e) => setTagDraft(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ',') {
+                      e.preventDefault();
+                      addTag(tagDraft);
+                    } else if (e.key === 'Backspace' && !tagDraft && tags.length > 0) {
+                      removeTag(tags[tags.length - 1]);
+                    }
+                  }}
+                  placeholder={t('inspirations.addTagPlaceholder')}
+                  maxLength={24}
+                  className="text-[11px] px-2 py-1 rounded-full border-2 border-cream-200 focus:border-mint-400 outline-none w-32 bg-white"
+                />
+                <button
+                  onClick={() => addTag(tagDraft)}
+                  disabled={!tagDraft.trim()}
+                  className="w-6 h-6 grid place-items-center rounded-full bg-mint-500 text-white hover:bg-mint-600 disabled:opacity-30 disabled:hover:bg-mint-500"
+                  title={t('inspirations.addTag')}
+                >
+                  <Plus size={12} />
+                </button>
+              </div>
+            )}
+          </div>
+          {suggestions.length > 0 && (
+            <div className="mt-2 flex flex-wrap gap-1 items-center">
+              <span className="text-[10px] text-leaf-500 font-bold mr-1">{t('inspirations.suggestedTags')}</span>
+              {suggestions.map((sug) => (
+                <button
+                  key={sug}
+                  onClick={() => addTag(sug)}
+                  className="text-[10px] px-2 py-0.5 rounded-full border border-cream-200 bg-white text-leaf-600 hover:border-mint-300 hover:text-leaf-800"
+                >
+                  + {sug}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         <div>

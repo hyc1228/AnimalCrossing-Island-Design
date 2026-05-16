@@ -426,7 +426,16 @@
     "deleteConfirm": "Remove this reference image from your inspirations library? This cannot be undone.",
     "similarTitle": "Similar references",
     "similarMatch": "{{value}}% match",
-    "similarBreakdown": "Style {{style}}% · Items {{items}}%"
+    "similarBreakdown": "Style {{style}}% · Items {{items}}%",
+    "searchPlaceholder": "Search descriptions, items, tags…",
+    "allTags": "All",
+    "shownCount": "{{shown}} / {{total}} shown",
+    "noMatch": "No inspirations match. Try a different keyword or clear the filters.",
+    "clearFilters": "Clear filters",
+    "tagsTitle": "Tags",
+    "addTagPlaceholder": "Add tag…",
+    "addTag": "Add tag",
+    "suggestedTags": "Existing:"
   },
   "importHid": {
     "headerTitle": "Import HID share image",

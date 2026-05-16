@@ -1,7 +1,7 @@
 # 岛屿规划师 · 产品方案
 
 > 最近更新: 2026-05-16
-> 状态: 第二迭代 + 第三迭代第一批 + 第三迭代第二批完成 · 等待用户反馈
+> 状态: 第二迭代 + 第三迭代第一批 + 第三迭代第二批 + 第三批完成 · 等待用户反馈
 
 ## 一句话定位
 
@@ -127,18 +127,27 @@
 4. ✅ **画布双指缩放**：IslandCanvas 新增 `onTouchMove/onTouchEnd`，2 指 pinch 触发以指中心为锚点的 scale，单指仍走原 Konva 拖拽逻辑；pinch 时屏蔽放置/绘制 mouseDown，避免误点。
 5. ✅ **i18n 全量补齐**：新增 `home.generateIsland`、`generate.*`、`scenes.*` 三组键 × zh-CN / en / ja。
 
+## 第三迭代第三批（已完成）
+
+聚焦"长期使用的稳定性"和"用户能不能找到东西"。
+
+- ✅ **灵感库标签 + 搜索**：`inspirationsStore` 加 `tags: string[]` 字段（v1 自动迁移 `[]`），新增 `setTags`；`InspirationsPage` 增加搜索框（描述 / 物品名 / 标签全文匹配）、置顶的标签筛选条（含计数），详情弹层里有 chip 形态的可编辑标签输入框（回车 / 逗号添加、退格删除、复用建议）。卡片底部展示 ≤3 个标签 +N 概览。
+- ✅ **Thumbnail 海蓝边框**：`exportCanvasThumbnail` 改为 async，先把岛屿区域抽成透明 PNG 保留 cornerRadius alpha，然后在 28px 海蓝 padding 的 canvas 上合成，回写 JPEG。彻底消除"圆角变黑"的视觉脏点；灵感卡 / 首页"最近设计"全部受益。
+- ✅ **iOS Safari pinch 锁页**：`IslandCanvas` 容器加 `touch-action: none` + `WebkitTouchCallout: none` + `overscrollBehavior: contain`，配合既有的 viewport `user-scalable=no`，让两指捏合只触发画布缩放而不会顺带放大整页。
+- ✅ **i18n**：zh-CN / en / ja 同步新增 `inspirations.searchPlaceholder / allTags / shownCount / noMatch / clearFilters / tagsTitle / addTagPlaceholder / addTag / suggestedTags`。
+
 ## 下一步候选（等用户挑）
 
-第二轮 + 第三轮第一批 + 第二批结束，剩下的候选：
+第二轮 + 第三轮三批结束，剩下的候选：
 
 1. **HID 映射扩张**：扩 `hidCatalog.ts` 覆盖更多 HID 子类型（特别是各种花色 → NH 真实花色 itemKey）
 2. **NH 物品 fractional size**：NH 数据里 `size.w/h` 是 0.5/1.5 这种浮点；目前一律 ceil 到 1。可以做亚像素布局
-3. **画布缩略图裁剪**：现在 thumbnail 是整个 stage 截图（包括海洋背景）。可裁剪到岛屿矩形 + 上传 / 下载分享
-4. **灵感库分类 / 标签**：灵感多了之后需要 tags / collections / 搜索
-5. **AI 识别离线 fallback**：BYOK 未配置时用纯 catalogMatcher + 视觉哈希做"近似估计"
-6. **「接受/换一个」流程深化**：现在 GeneratePage 是 1 次生成 → 全量应用；可以做"接受部分 + 再生成补充"的多轮 LLM
-7. **Scene Pack 扩张**：现在 7 个手工搭配；可以根据 NH HHA 主题自动生成更多
-8. **画布手势平移/双击**：iOS Safari pinch 期间会触发系统手势缩放整页；可以加 `touch-action: none` 进一步锁住
+3. **AI 识别离线 fallback**：BYOK 未配置时用纯 catalogMatcher + 视觉哈希做"近似估计"
+4. **「接受/换一个」流程深化**：现在 GeneratePage 是 1 次生成 → 全量应用；可以做"接受部分 + 再生成补充"的多轮 LLM
+5. **Scene Pack 扩张**：现在 7 个手工搭配；可以根据 NH HHA 主题自动生成更多
+6. **灵感库 collections**：在 tags 之上再做 collections / smart folder（按风格自动归集）
+7. **导出岛屿为可滚动长图**：把整张岛 + 物品清单合成 PDF / 长图，便于在小红书/Reddit 分享
+8. **回到首页快捷键 + 命令面板**：⌘K 直达搜索（设计名 / 物品名 / 灵感）
 
 ## 技术决策记录
 

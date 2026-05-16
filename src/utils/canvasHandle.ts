@@ -70,32 +70,73 @@ export function downloadDataUrl(filename: string, dataUrl: string): void {
  * Returns `null` if there is no active stage. Used by the auto-save flow so
  * the gallery and recent-designs lists can show real previews instead of a
  * placeholder emoji.
+ *
+ * Implementation note: the island has rounded corners and the wrapper's sea
+ * background is rendered with CSS (outside the Konva stage). Capturing the
+ * raw stage at the island bounds produces hard black corners under JPEG. We
+ * pad the capture by a small sea margin and composite the island on top of
+ * a matching sea-blue fill so the rounded corners blend naturally.
  */
-export function exportCanvasThumbnail(designPx: { width: number; height: number }): string | null {
+const SEA_FILL = '#bfe4ff';
+
+export async function exportCanvasThumbnail(designPx: { width: number; height: number }): Promise<string | null> {
   if (!currentStage) return null;
-  // Aim for the largest dimension to be ≈480 so we stay well under 30KB per
-  // design after JPEG encoding (localStorage has a hard 5MB-ish budget).
-  const longest = Math.max(designPx.width, designPx.height);
-  const pixelRatio = Math.min(1, 480 / longest);
+  const PAD = 28; // sea-blue margin around the island in design pixels
+  const longest = Math.max(designPx.width, designPx.height) + PAD * 2;
+  const ratio = Math.min(1, 520 / longest);
+  const outW = Math.max(1, Math.round((designPx.width + PAD * 2) * ratio));
+  const outH = Math.max(1, Math.round((designPx.height + PAD * 2) * ratio));
 
   const oldScaleX = currentStage.scaleX();
   const oldScaleY = currentStage.scaleY();
   const oldPos = currentStage.position();
   currentStage.scale({ x: 1, y: 1 });
   currentStage.position({ x: 0, y: 0 });
-  const dataUrl = currentStage.toDataURL({
-    x: 0,
-    y: 0,
-    width: designPx.width,
-    height: designPx.height,
-    pixelRatio,
-    mimeType: 'image/jpeg',
-    quality: 0.72,
+
+  // Render the island region of the stage as a transparent PNG so we keep the
+  // rounded corner alpha intact for compositing.
+  let islandPng: string | null = null;
+  try {
+    islandPng = currentStage.toDataURL({
+      x: 0,
+      y: 0,
+      width: designPx.width,
+      height: designPx.height,
+      pixelRatio: ratio,
+      mimeType: 'image/png',
+    });
+  } finally {
+    currentStage.scale({ x: oldScaleX, y: oldScaleY });
+    currentStage.position(oldPos);
+    currentStage.batchDraw();
+  }
+  if (!islandPng) return null;
+
+  const composite = document.createElement('canvas');
+  composite.width = outW;
+  composite.height = outH;
+  const ctx = composite.getContext('2d');
+  if (!ctx) return islandPng;
+  // Sea-blue background, matching the CSS radial gradient stops used in the
+  // editor wrapper.
+  ctx.fillStyle = SEA_FILL;
+  ctx.fillRect(0, 0, outW, outH);
+
+  try {
+    const img = await decodeImage(islandPng);
+    const padPx = PAD * ratio;
+    ctx.drawImage(img, padPx, padPx, outW - padPx * 2, outH - padPx * 2);
+  } catch {
+    return islandPng;
+  }
+  return composite.toDataURL('image/jpeg', 0.78);
+}
+
+function decodeImage(src: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
   });
-  currentStage.scale({ x: oldScaleX, y: oldScaleY });
-  currentStage.position(oldPos);
-  // Force the visible stage back to its prior transform immediately so the
-  // user sees no flash (toDataURL has already drawn at 1:1 above).
-  currentStage.batchDraw();
-  return dataUrl;
 }

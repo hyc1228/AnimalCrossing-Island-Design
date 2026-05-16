@@ -384,6 +384,17 @@ export default function IslandCanvas({ width, height }: IslandCanvasProps) {
         cursor: cursorStyle,
         background:
           'radial-gradient(ellipse at center, #cfeaff 0%, #bfe4ff 60%, #aedbf7 100%)',
+        // iOS Safari otherwise hands two-finger gestures to the system page
+        // zoom while we're trying to pinch-zoom the canvas. Force the browser
+        // to leave touch events to us so the in-canvas pinch logic stays in
+        // control.
+        touchAction: 'none',
+        WebkitUserSelect: 'none',
+        userSelect: 'none',
+        // Disable the iOS "tap-and-hold" callout that interferes with rapid
+        // strokes.
+        WebkitTouchCallout: 'none',
+        overscrollBehavior: 'contain',
       }}
       onContextMenu={(e) => e.preventDefault()}
     >

@@ -426,7 +426,16 @@
     "deleteConfirm": "确定要从灵感库中移除这张参考图吗？此操作不可恢复。",
     "similarTitle": "相似的参考",
     "similarMatch": "{{value}}% 相似",
-    "similarBreakdown": "风格 {{style}}% · 物品 {{items}}%"
+    "similarBreakdown": "风格 {{style}}% · 物品 {{items}}%",
+    "searchPlaceholder": "搜索描述、物品、标签…",
+    "allTags": "全部",
+    "shownCount": "{{shown}} / {{total}} 张",
+    "noMatch": "没有匹配的灵感。试试换个关键词或清空筛选。",
+    "clearFilters": "清空筛选",
+    "tagsTitle": "标签",
+    "addTagPlaceholder": "加标签…",
+    "addTag": "添加标签",
+    "suggestedTags": "已有："
   },
   "importHid": {
     "headerTitle": "导入 HID 分享图",

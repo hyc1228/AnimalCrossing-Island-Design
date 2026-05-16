@@ -362,10 +362,10 @@ useCanvasStore.subscribe(
   (s) => s.design,
   (design) => {
     if (saveTimer) window.clearTimeout(saveTimer);
-    saveTimer = window.setTimeout(() => {
+    saveTimer = window.setTimeout(async () => {
       let thumbnail: string | undefined = design.thumbnail;
       try {
-        const captured = exportCanvasThumbnail({
+        const captured = await exportCanvasThumbnail({
           width: design.size.cols * CELL_PX,
           height: design.size.rows * CELL_PX,
         });

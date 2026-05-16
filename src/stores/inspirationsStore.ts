@@ -21,6 +21,12 @@ export interface SavedInspiration {
   result: RecognitionResult;
   /** Optional user note. */
   note?: string;
+  /**
+   * Free-form user tags (e.g. "to-do", "park area", "for-jess"). Always
+   * lowercased + trimmed by `setTags`. Older entries (v1) had no tags field;
+   * we coerce missing values to [] on read.
+   */
+  tags?: string[];
 }
 
 interface InspirationsState {
@@ -29,6 +35,8 @@ interface InspirationsState {
   add: (result: RecognitionResult) => Promise<string>;
   remove: (id: string) => void;
   updateNote: (id: string, note: string) => void;
+  /** Replace the tag set for one entry. Tags are trimmed, lowercased, deduped. */
+  setTags: (id: string, tags: string[]) => void;
   clear: () => void;
 }
 
@@ -43,10 +51,28 @@ function loadInitial(): SavedInspiration[] {
     if (!raw) return [];
     const parsed = JSON.parse(raw) as SavedInspiration[];
     if (!Array.isArray(parsed)) return [];
-    return parsed;
+    // Migrate v1 entries that lacked tags.
+    return parsed.map((it) => ({
+      ...it,
+      tags: Array.isArray(it.tags) ? it.tags : [],
+    }));
   } catch {
     return [];
   }
+}
+
+function sanitizeTags(raw: string[]): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const r of raw) {
+    if (typeof r !== 'string') continue;
+    const v = r.trim().toLowerCase();
+    if (!v || v.length > 24 || seen.has(v)) continue;
+    seen.add(v);
+    out.push(v);
+    if (out.length >= 8) break; // cap so the UI never overflows
+  }
+  return out;
 }
 
 function persist(items: SavedInspiration[]) {
@@ -116,6 +142,7 @@ export const useInspirationsStore = create<InspirationsState>((set, get) => ({
       savedAt: Date.now(),
       thumbnail,
       result: { ...result, imageDataUrl: thumbnail },
+      tags: [],
     };
     // Newest first. Drop overflow from the tail.
     const next = [entry, ...get().items].slice(0, MAX_ENTRIES);
@@ -132,6 +159,15 @@ export const useInspirationsStore = create<InspirationsState>((set, get) => ({
 
   updateNote: (id, note) => {
     const next = get().items.map((it) => (it.id === id ? { ...it, note } : it));
+    persist(next);
+    set({ items: next });
+  },
+
+  setTags: (id, tags) => {
+    const sanitized = sanitizeTags(tags);
+    const next = get().items.map((it) =>
+      it.id === id ? { ...it, tags: sanitized } : it,
+    );
     persist(next);
     set({ items: next });
   },

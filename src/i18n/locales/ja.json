@@ -426,7 +426,16 @@
     "deleteConfirm": "ライブラリからこの参考画像を削除します。元に戻せません。",
     "similarTitle": "似ている参考画像",
     "similarMatch": "{{value}}% 類似",
-    "similarBreakdown": "スタイル {{style}}% · アイテム {{items}}%"
+    "similarBreakdown": "スタイル {{style}}% · アイテム {{items}}%",
+    "searchPlaceholder": "説明・アイテム・タグを検索…",
+    "allTags": "すべて",
+    "shownCount": "{{shown}} / {{total}} 枚",
+    "noMatch": "該当するインスピレーションがありません。キーワードを変えるか、絞り込みを解除してください。",
+    "clearFilters": "絞り込みを解除",
+    "tagsTitle": "タグ",
+    "addTagPlaceholder": "タグを追加…",
+    "addTag": "タグを追加",
+    "suggestedTags": "既存："
   },
   "importHid": {
     "headerTitle": "HID 共有画像を読み込む",
