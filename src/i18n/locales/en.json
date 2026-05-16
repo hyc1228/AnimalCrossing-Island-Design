@@ -66,7 +66,8 @@
     "subtitleDesc": "Each template is a complete design. Apply it and tweak freely in the editor.",
     "filterAll": "All styles",
     "itemCount": "{{count}} items",
-    "apply": "Apply to canvas"
+    "apply": "Apply to canvas",
+    "loading3D": "Rendering 3D preview…"
   },
   "editor": {
     "defaultName": "My Island",

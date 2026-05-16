@@ -1,7 +1,7 @@
 # 岛屿规划师 · 产品方案
 
 > 最近更新: 2026-05-16
-> 状态: 第二迭代 + 第三迭代第一批 + 第三迭代第二批 + 第三批完成 · 等待用户反馈
+> 状态: 第二迭代 + 第三迭代 1-4 批完成 · 模板库 3D 封面上线 · 等待用户反馈
 
 ## 一句话定位
 
@@ -135,6 +135,11 @@
 - ✅ **Thumbnail 海蓝边框**：`exportCanvasThumbnail` 改为 async，先把岛屿区域抽成透明 PNG 保留 cornerRadius alpha，然后在 28px 海蓝 padding 的 canvas 上合成，回写 JPEG。彻底消除"圆角变黑"的视觉脏点；灵感卡 / 首页"最近设计"全部受益。
 - ✅ **iOS Safari pinch 锁页**：`IslandCanvas` 容器加 `touch-action: none` + `WebkitTouchCallout: none` + `overscrollBehavior: contain`，配合既有的 viewport `user-scalable=no`，让两指捏合只触发画布缩放而不会顺带放大整页。
 - ✅ **i18n**：zh-CN / en / ja 同步新增 `inspirations.searchPlaceholder / allTags / shownCount / noMatch / clearFilters / tagsTitle / addTagPlaceholder / addTag / suggestedTags`。
+
+## 第三迭代第四批（已完成）
+
+- ✅ **模板库 3D 封面**：抽出 `Preview3D` 里的所有 r3f 场景图元到独立的 `IslandScene`（地形 / 树 / 花 / 建筑 / 栅栏 / 通用家具，加灯光与海岛基底）；`Preview3D` 重构为复用它的薄壳。新增 `TemplateCover3D`：单个 `<Canvas frameloop="demand">`，固定 isometric 相机，shadow map 仅 512，DPR `[1, 1.5]`，外加 `IntersectionObserver` 懒挂载（只在卡片真正进入视口时才创建 WebGL 上下文，避免 5+ 个 GPU 上下文同时存在）。`GalleryPage.TemplateCard` 用 3D 封面替换 emoji 拼贴，3D 组件用 `React.lazy` 拆分，模板库初始包再瘦一圈（GalleryPage chunk 从 6.85KB → 5.59KB）。
+- ✅ **i18n**：`gallery.loading3D` 三语 fallback 文案。
 
 ## 下一步候选（等用户挑）
 

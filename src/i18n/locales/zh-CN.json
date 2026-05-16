@@ -66,7 +66,8 @@
     "subtitleDesc": "每个模板都是完整的方案，套用后可在编辑器中自由调整。",
     "filterAll": "全部风格",
     "itemCount": "{{count}} 个物品",
-    "apply": "套用到画布"
+    "apply": "套用到画布",
+    "loading3D": "正在渲染 3D 预览…"
   },
   "editor": {
     "defaultName": "我的小岛",

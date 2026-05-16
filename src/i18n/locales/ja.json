@@ -66,7 +66,8 @@
     "subtitleDesc": "各テンプレートは完成形。適用後、エディタで自由にカスタムできます。",
     "filterAll": "すべて",
     "itemCount": "アイテム {{count}}個",
-    "apply": "キャンバスに適用"
+    "apply": "キャンバスに適用",
+    "loading3D": "3D プレビューを描画中…"
   },
   "editor": {
     "defaultName": "わたしの島",
