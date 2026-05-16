@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Eye, EyeOff, ExternalLink, Sparkles, Info } from 'lucide-react';
+import { Eye, EyeOff, ExternalLink, Sparkles, Info, Wand2 } from 'lucide-react';
 import { Modal as AIModal, Button as AIButton } from 'animal-island-ui';
 import {
   DEFAULT_MODELS,
   MODEL_OPTIONS,
+  detectProviderFromKey,
   useSettingsStore,
   type AIProvider,
 } from '../../stores/settingsStore';
@@ -75,6 +76,19 @@ export default function SettingsDialog({ open, onClose }: SettingsDialogProps) {
     if (!MODEL_OPTIONS[p].some((m) => m.id === byok.model)) {
       setModel(DEFAULT_MODELS[p]);
     }
+  };
+
+  // Auto-detect provider from the key prefix. If the detected provider
+  // differs from what's currently selected, surface a "switch?" suggestion
+  // chip rather than silently switching — the user may have intentionally
+  // paired a custom-endpoint OpenAI-compatible token with a different label.
+  const detectedProvider = useMemo(() => detectProviderFromKey(localKey), [localKey]);
+  const suggestSwitchTo: AIProvider | null =
+    detectedProvider && detectedProvider !== byok.provider ? detectedProvider : null;
+
+  const applySuggestion = () => {
+    if (!suggestSwitchTo) return;
+    handleProviderChange(suggestSwitchTo);
   };
 
   return (
@@ -183,6 +197,24 @@ export default function SettingsDialog({ open, onClose }: SettingsDialogProps) {
               {showKey ? <EyeOff size={14} /> : <Eye size={14} />}
             </button>
           </div>
+          {/* Auto-detected provider hint: only shown when the key prefix
+              maps to a different provider than the one currently selected.
+              When detection matches the current pick we stay silent. */}
+          {suggestSwitchTo && (
+            <div className="mt-2 flex items-center gap-2 text-[11px] bg-sun-500/15 border-2 border-sun-500/30 rounded-2xl px-3 py-1.5">
+              <Wand2 size={12} className="text-sun-700 shrink-0" />
+              <span className="text-leaf-700 flex-1 leading-snug">
+                {t('settings.detectedProvider', { name: providerLabel(suggestSwitchTo) })}
+              </span>
+              <button
+                onClick={applySuggestion}
+                type="button"
+                className="font-extrabold text-mint-600 hover:text-mint-700 shrink-0"
+              >
+                {t('settings.detectedProviderSwitch')}
+              </button>
+            </div>
+          )}
         </div>
 
         {byok.provider === 'openai' && (
