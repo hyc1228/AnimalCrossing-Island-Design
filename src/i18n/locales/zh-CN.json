@@ -1,0 +1,422 @@
+{
+  "app": {
+    "name": "岛屿规划师",
+    "tagline": "Animal Crossing Island Planner"
+  },
+  "common": {
+    "cancel": "取消",
+    "confirm": "确定",
+    "delete": "删除",
+    "open": "打开",
+    "close": "关闭",
+    "save": "保存",
+    "export": "导出",
+    "back": "返回",
+    "home": "首页"
+  },
+  "language": {
+    "label": "语言",
+    "switch": "切换语言"
+  },
+  "home": {
+    "tag": "让岛建变得轻松又有趣",
+    "heroLine1": "先规划，再落地，",
+    "heroLine2": "再也不用反复",
+    "heroAccent": "拆建",
+    "subtitle": "俯视网格自由布局 · 5 套精选风格模板 · AI 智能配置建议 · 3D 预览与家具清单",
+    "newIsland": "新建岛屿",
+    "continueLast": "继续上次设计",
+    "browseTemplates": "浏览模板",
+    "recognizeImage": "参考图识别",
+    "features": {
+      "recognize": {
+        "title": "参考图识别",
+        "desc": "扔一张小红书 / Pinterest 美图 → AI 出物品清单 + 风格分析 + 起点平面图。",
+        "badge": "新"
+      },
+      "canvas": {
+        "title": "网格化画布",
+        "desc": "80×70 俯视网格，四图层独立编辑，画地形、铺道路、摆家具一气呵成。"
+      },
+      "ai": {
+        "title": "AI 智能建议",
+        "desc": "选个风格，AI 帮你在整岛或选中区域自动生成布局，喜欢就保留。"
+      },
+      "preview": {
+        "title": "3D 积木预览",
+        "desc": "一键查看立体效果，提前感受岛屿空间感，导出家具清单照着采购。"
+      }
+    },
+    "myDesigns": "我的岛屿设计",
+    "designCount": "{{count}} 个",
+    "designMeta": "{{count}} 个物品 · {{updated}}",
+    "openEdit": "打开编辑",
+    "deleteConfirm": "确定删除这个岛屿设计？此操作不可恢复。",
+    "footer": "本工具与任天堂无关 · 仅为玩家社区辅助 · Made with love for Animal Crossing fans",
+    "newIslandName": "我的小岛 {{index}}",
+    "inspirationsChip": "灵感库已存 {{count}} 张参考图",
+    "importHidChip": "导入 HID 分享图"
+  },
+  "gallery": {
+    "title": "模板库",
+    "subtitle": "挑一个起点",
+    "subtitleDesc": "每个模板都是完整的方案，套用后可在编辑器中自由调整。",
+    "filterAll": "全部风格",
+    "itemCount": "{{count}} 个物品",
+    "apply": "套用到画布"
+  },
+  "editor": {
+    "defaultName": "我的小岛",
+    "panelTabs": {
+      "layers": "图层",
+      "ai": "AI",
+      "preview3d": "3D",
+      "shopping": "清单"
+    },
+    "panelToggle": {
+      "items": "物品",
+      "panels": "面板"
+    },
+    "collapseLeft": "收起物品库",
+    "expandLeft": "展开物品库",
+    "collapseRight": "收起右侧面板",
+    "expandRight": "展开右侧面板",
+    "autoSaved": "自动保存",
+    "clearAll": "清空",
+    "clearConfirm": "清空整个画布？"
+  },
+  "toolbar": {
+    "select": "选择 (V)",
+    "terrainBrush": "地形画笔 (B)",
+    "terrainRect": "矩形铺设",
+    "erase": "橡皮 (E)",
+    "pan": "平移 (H)",
+    "undo": "撤销 (Ctrl+Z)",
+    "redo": "重做 (Ctrl+Y)",
+    "rotate": "旋转选中 (R)",
+    "deleteSelected": "删除选中 (Del)",
+    "toggleGrid": "显示/隐藏网格",
+    "terrainLabel": "地形:",
+    "brush": "笔刷"
+  },
+  "palette": {
+    "title": "物品库",
+    "search": "搜索物品...",
+    "empty": "没有找到匹配的物品",
+    "hint": "提示：点击物品后到画布上点击放置。再次点击物品取消。",
+    "categories": {
+      "building": "建筑",
+      "bridge": "桥梁",
+      "incline": "坡道",
+      "tree": "树木",
+      "flower": "花草",
+      "fence": "栅栏",
+      "furniture": "家具",
+      "decoration": "装饰"
+    }
+  },
+  "layers": {
+    "title": "图层",
+    "subtitle": "控制每层的显隐与锁定",
+    "show": "显示",
+    "hide": "隐藏",
+    "lock": "锁定",
+    "unlock": "解锁",
+    "hint": "提示：橙色边框表示当前激活图层。地形图层为最底层，依次向上是道路、建筑、装饰。",
+    "names": {
+      "terrain": "地形",
+      "path": "道路",
+      "building": "建筑",
+      "decoration": "装饰"
+    }
+  },
+  "ai": {
+    "title": "AI 智能建议",
+    "subtitle": "选个风格让 AI 给你出方案",
+    "style": "风格",
+    "density": "密度",
+    "densitySparse": "稀疏",
+    "densityMedium": "适中",
+    "densityDense": "密集",
+    "scope": "范围",
+    "scopeFull": "整岛",
+    "scopeArea": "指定区域",
+    "generate": "生成方案",
+    "previewTitle": "预览方案",
+    "previewCount": "{{count}} 个新物品",
+    "previewHint": "方案已生成但尚未应用，可以重新生成变体，或全量/部分接受。",
+    "acceptAll": "全部接受",
+    "acceptHalf": "接受 50%",
+    "acceptQuarter": "接受 25%",
+    "regenerate": "换一个",
+    "discard": "放弃",
+    "footer": "当前为规则式生成（MVP）。后续可接入 GPT/Claude API 生成更灵活的方案。"
+  },
+  "shopping": {
+    "title": "物品清单",
+    "subtitle": "{{count}} 件 · 共 {{kinds}} 类",
+    "empty": "画布上还没有物品。\n到左侧物品库选一个开始吧～",
+    "totalGold": "预估总金币",
+    "diy": "DIY 配方",
+    "shop": "商店",
+    "exportTitle": "{{name}} - 物品清单",
+    "exportHead": "共 {{count}} 件物品，估算金币 {{gold}}"
+  },
+  "canvas": {
+    "zoom": "缩放 {{value}}%",
+    "coord": "坐标 ({{x}}, {{y}})",
+    "size": "画布 {{cols}}×{{rows}}",
+    "zoomIn": "放大",
+    "zoomOut": "缩小",
+    "reset": "重置视图"
+  },
+  "preview3d": {
+    "resetCamera": "重置视角（N 朝上）"
+  },
+  "terrain": {
+    "grass": "草地",
+    "sand": "沙地",
+    "water": "水域",
+    "pathStone": "石板路",
+    "pathWood": "木板路",
+    "pathBrick": "砖路",
+    "cliff1": "悬崖1",
+    "cliff2": "悬崖2",
+    "cliff3": "悬崖3",
+    "flowerBed": "花田"
+  },
+  "styles": {
+    "japanese": {
+      "name": "日式庭院",
+      "desc": "禅意石灯笼、竹林、樱花、锦鲤池，宁静淡雅的东方美学。"
+    },
+    "garden": {
+      "name": "田园农家",
+      "desc": "木栅栏围合的小院、风车、果树和花田，温馨自然的乡村风。"
+    },
+    "fairy": {
+      "name": "童话森林",
+      "desc": "蘑菇、灯笼、原木椅围炉，松林深处的童话气息。"
+    },
+    "cafe": {
+      "name": "咖啡街区",
+      "desc": "砖路、街灯、复古电话亭和露天咖啡座，浪漫的城市街角。"
+    },
+    "modern": {
+      "name": "现代极简",
+      "desc": "几何雕塑、铁栅栏、喷泉与极简路灯，干净利落的现代感。"
+    }
+  },
+  "templates": {
+    "tpl_japanese_zen": {
+      "name": "禅意日式庭院",
+      "desc": "樱花、石灯笼、锦鲤池构成的宁静日式花园，适合喜欢东方美学的玩家。"
+    },
+    "tpl_garden_farm": {
+      "name": "田园农家小院",
+      "desc": "风车、果树、菜地与木栅栏围合的温馨乡村，慢生活气息浓厚。"
+    },
+    "tpl_fairy_forest": {
+      "name": "童话精灵森林",
+      "desc": "松林深处的蘑菇与篝火，灯笼小径通向神秘营地。"
+    },
+    "tpl_cafe_street": {
+      "name": "巴黎咖啡街区",
+      "desc": "砖路两侧露天咖啡座、复古电话亭与街灯，浪漫的城市街角。"
+    },
+    "tpl_modern_minimal": {
+      "name": "现代极简广场",
+      "desc": "喷泉、雕塑、铁栅栏组成的简洁广场，干净利落的现代感。"
+    }
+  },
+  "sources": {
+    "main": "主线剧情",
+    "mainShort": "主线",
+    "core": "核心",
+    "invite": "邀请入住",
+    "build": "建造",
+    "cutting": "砍树苗/移植",
+    "sapling": "砍树苗",
+    "spring": "春季活动",
+    "beach": "沙滩种植",
+    "mystery": "神秘岛",
+    "fruit": "果树",
+    "leif": "雷亚",
+    "plant": "种植",
+    "shop": "商店",
+    "nookShop": "诺顿百货"
+  },
+  "items": {
+    "resident_services": "居民服务中心",
+    "museum": "博物馆",
+    "tailor_shop": "艾布鲁服饰店",
+    "nooks_cranny": "狸端百货",
+    "campsite": "露营地",
+    "house_player": "玩家房屋",
+    "house_villager": "居民小屋",
+    "bridge_wooden": "木桥",
+    "bridge_stone": "石桥",
+    "bridge_brick": "砖桥",
+    "incline_wood": "木坡道",
+    "incline_stone": "石坡道",
+    "tree_oak": "阔叶树",
+    "tree_pine": "松树",
+    "tree_cherry": "樱花树",
+    "tree_palm": "椰子树",
+    "bamboo": "竹子",
+    "tree_fruit_apple": "苹果树",
+    "shrub": "灌木",
+    "flower_rose_red": "红玫瑰",
+    "flower_rose_white": "白玫瑰",
+    "flower_tulip_yellow": "黄郁金香",
+    "flower_tulip_pink": "粉郁金香",
+    "flower_lily_white": "白百合",
+    "flower_cosmos_pink": "粉波斯菊",
+    "flower_hyacinth_blue": "蓝风信子",
+    "flower_mum_white": "白菊花",
+    "fence_bamboo": "竹篱笆",
+    "fence_wood": "木栅栏",
+    "fence_iron": "铁栅栏",
+    "fence_log": "原木栅栏",
+    "stone_lantern": "石灯笼",
+    "zen_bell": "钟楼",
+    "tea_table": "茶几",
+    "cafe_chair": "咖啡椅",
+    "parasol": "海滩遮阳伞",
+    "bench_wooden": "木长椅",
+    "streetlight": "路灯",
+    "fountain": "喷泉",
+    "windmill": "风车",
+    "mailbox": "邮筒",
+    "campfire": "篝火",
+    "tent": "帐篷",
+    "log_bench": "原木长椅",
+    "sandbox": "沙坑",
+    "swing": "秋千",
+    "koi_pond": "锦鲤池装饰",
+    "torii_gate": "鸟居",
+    "rock_garden": "枯山水石组",
+    "flag_pole": "旗杆",
+    "phone_booth": "复古电话亭",
+    "planter_box": "花箱",
+    "lamp_post_garden": "园林路灯",
+    "mushroom_deco": "蘑菇装饰",
+    "water_well": "水井",
+    "modern_sculpture": "现代雕塑"
+  },
+  "recognize": {
+    "headerTitle": "参考图识别",
+    "headerSettings": "AI 设置",
+    "headerSettingsShort": "设置",
+    "noKeyTitle": "还没有配置 AI 服务",
+    "noKeyDesc": "参考图识别需要调用多模态大模型 API。用 BYOK (Bring Your Own Key) 方式，你的 Key 只保存在本地，绝不上传服务器。推荐 Gemini 2.0 Flash（Google AI Studio 提供免费额度，单张图识别成本约 ¥0.001）。",
+    "noKeyCta": "去配置",
+    "uploadPrompt": "上传一张参考图",
+    "uploadDesc": "支持俯视地图 / 3D 截图 / 小红书 / Pinterest 图\n拖拽到此处或点击选择",
+    "hideImage": "隐藏图片",
+    "showImage": "显示图片",
+    "startRecognize": "开始识别",
+    "recognizing": "AI 正在识别…",
+    "errorNotImage": "请上传图片文件",
+    "errorFallback": "识别失败，请稍后重试。",
+    "tipsTitle": "提示",
+    "tip1": "俯视图识别效果最好（NookPhone 截图 / HID 导出图等）",
+    "tip2": "3D 美图能识别风格 + 可见物品，但不还原网格位置",
+    "tip3": "图越清晰、物品越完整，结果越准",
+    "tip4": "当前对接到 60 件精选物品库；2000+ NH 数据库接入是下一步",
+    "emptyTitle": "识别结果会出现在这里",
+    "emptyDesc": "上传图片 → 开始识别 → 得到风格分析、可见物品清单、可一键应用到画布",
+    "loadingTitle": "{{model}} 分析中…",
+    "loadingDesc": "通常需要 3-10 秒",
+    "stylesTitle": "风格匹配",
+    "densityChip": "密度 {{density}}",
+    "itemsHeader": "识别到 {{kinds}} 类物品 · 已选 {{selectedKinds}} 类 / {{totalCount}} 件",
+    "itemsEmpty": "未识别到任何具体物品，可换张图再试。",
+    "unmatched": "未匹配",
+    "unmatchedTooltip": "本地物品库未找到对应项",
+    "matchExpand": "还有 {{count}}",
+    "matchCollapse": "收起",
+    "recognized": "识别 {{value}}%",
+    "matched": "匹配 {{value}}%",
+    "exportShoppingList": "导出清单",
+    "applyToCanvas": "应用到新岛屿",
+    "exportTitle": "ACNH 参考图识别 - 购物清单",
+    "exportGeneratedAt": "生成于 {{datetime}}",
+    "exportStyle": "风格: {{styles}}",
+    "exportDescription": "描述: {{description}}",
+    "exportDensity": "密度: {{density}}",
+    "designNamePrefix": "识别岛屿 {{time}}",
+    "density": {
+      "sparse": "稀疏",
+      "medium": "适中",
+      "dense": "密集"
+    },
+    "skippedToast": "已放置 {{placed}} 件，{{skipped}} 件未能放下（重叠或未匹配到本地物品）。",
+    "skippedToastDismiss": "知道了"
+  },
+  "settings": {
+    "title": "AI 服务设置",
+    "privacyNote": "你的 API Key 只保存在本设备的浏览器，永远不会上传到我们的服务器。每次识别由你的浏览器直接调用模型 API。",
+    "providerLabel": "服务商",
+    "providerGemini": "Google Gemini",
+    "providerOpenAI": "OpenAI",
+    "providerAnthropic": "Anthropic",
+    "pricingGemini": "Gemini 2.0 Flash: 输入 ≈ $0.075/M tokens；单张图识别 < ¥0.001",
+    "pricingOpenAI": "GPT-4o-mini: 输入 $0.15/M tokens；单张图识别 ≈ ¥0.005",
+    "pricingAnthropic": "Claude Haiku: 输入 $0.80/M tokens；单张图识别 ≈ ¥0.02",
+    "modelLabel": "模型",
+    "apiKeyLabel": "API Key",
+    "apiKeyDocsGemini": "Google AI Studio (免费额度)",
+    "apiKeyDocsOpenAI": "OpenAI Platform",
+    "apiKeyDocsAnthropic": "Anthropic Console",
+    "apiKeyShow": "显示",
+    "apiKeyHide": "隐藏",
+    "customEndpointLabel": "自定义 Endpoint",
+    "customEndpointOptional": "(可选, OpenAI 兼容)",
+    "save": "保存",
+    "cancel": "取消"
+  },
+  "inspirations": {
+    "title": "灵感库",
+    "subtitleCount": "已收藏 {{count}} 张参考图",
+    "subtitleDesc": "每张识别过的图都自动存到这里，可以随时回来翻看、重新应用或导出清单。数据只保存在本设备的浏览器。",
+    "emptyTitle": "还没有灵感",
+    "emptyDesc": "上传一张 Pinterest / 小红书的岛建美图，AI 识别成功后会自动收藏到这里。",
+    "applyAction": "应用到新岛",
+    "kindsBadge": "{{count}} 类",
+    "itemsHeader": "识别到 {{count}} 类物品",
+    "detailTitle": "灵感详情",
+    "clearAll": "清空全部",
+    "clearAllTitle": "清空灵感库？",
+    "clearAllConfirm": "将删除全部 {{count}} 张参考图，此操作不可恢复。",
+    "deleteTitle": "删除这张灵感？",
+    "deleteConfirm": "确定要从灵感库中移除这张参考图吗？此操作不可恢复。"
+  },
+  "importHid": {
+    "headerTitle": "导入 HID 分享图",
+    "subtitle": "Happy Island Designer PNG 解码",
+    "subtitleDesc": "把 HID 导出的 PNG 拖进来，浏览其中包含的物品分布、地形图层和元数据，并下载完整 JSON。",
+    "previewOnlyTitle": "目前为只读预览",
+    "previewOnlyDesc": "HID 的物品类别 / 类型词表与本工具不一致，完整导入到画布需要建一份映射表，已记入下一轮计划。",
+    "uploadPrompt": "上传一张 HID PNG",
+    "uploadDesc": "拖到此处或点击选择\n（必须是 HID 原版导出，被截图 / 转 JPEG 会丢失数据）",
+    "tipsTitle": "提示",
+    "tip1": "HID 把岛屿 JSON 隐写在 PNG 的 alpha 通道",
+    "tip2": "微信/微博发图会压成 JPEG，请走文件传输",
+    "tip3": "下载的 JSON 可用 HID 网页版直接还原",
+    "emptyTitle": "解析结果会出现在这里",
+    "emptyDesc": "上传 PNG → 自动解码 → 看到岛屿摘要，并可下载完整 JSON。",
+    "loading": "正在解码…",
+    "version": "格式 {{version}}",
+    "totalObjects": "共 {{count}} 个物体",
+    "drawingLayers": "{{count}} 层地形/道路",
+    "edgeTiles": "{{count}} 块岛屿边缘瓦片",
+    "objectsHeader": "物品分布",
+    "objectsEmpty": "未识别到任何物品。可能是空白地图。",
+    "downloadJson": "下载 JSON",
+    "errorNotPng": "请上传 PNG 文件",
+    "errorNoPayload": "PNG 中未找到 HID 数据。该图可能不是 HID 原版导出，或被压成 JPEG/截图导致隐藏数据丢失。",
+    "errorCorrupt": "隐藏的数据损坏或非 HID 格式。",
+    "errorImage": "图片无法读取，请换一张试试。"
+  }
+}

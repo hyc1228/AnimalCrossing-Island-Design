@@ -1,0 +1,422 @@
+{
+  "app": {
+    "name": "Island Planner",
+    "tagline": "Animal Crossing Island Planner"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "confirm": "OK",
+    "delete": "Delete",
+    "open": "Open",
+    "close": "Close",
+    "save": "Save",
+    "export": "Export",
+    "back": "Back",
+    "home": "Home"
+  },
+  "language": {
+    "label": "Language",
+    "switch": "Switch language"
+  },
+  "home": {
+    "tag": "Make island design easy and fun",
+    "heroLine1": "Plan first, build later —",
+    "heroLine2": "no more endless",
+    "heroAccent": "tear-downs",
+    "subtitle": "Top-down grid · 5 curated style templates · AI layout suggestions · 3D preview & item list",
+    "newIsland": "New Island",
+    "continueLast": "Continue last design",
+    "browseTemplates": "Browse templates",
+    "recognizeImage": "Recognize from Image",
+    "features": {
+      "recognize": {
+        "title": "Recognize from Image",
+        "desc": "Drop a Pinterest / red-book photo — AI returns an item list, style tags & a starter layout.",
+        "badge": "NEW"
+      },
+      "canvas": {
+        "title": "Grid Canvas",
+        "desc": "80×70 top-down grid with four independent layers — paint terrain, lay paths, place furniture."
+      },
+      "ai": {
+        "title": "AI Suggestions",
+        "desc": "Pick a style; AI generates a layout for the whole island or a selected area. Keep what you like."
+      },
+      "preview": {
+        "title": "3D Block Preview",
+        "desc": "See your design in 3D, feel the spatial sense, and export a shopping list to follow."
+      }
+    },
+    "myDesigns": "My Islands",
+    "designCount": "{{count}}",
+    "designMeta": "{{count}} items · {{updated}}",
+    "openEdit": "Open editor",
+    "deleteConfirm": "Delete this island design? This cannot be undone.",
+    "footer": "Not affiliated with Nintendo · A community tool · Made with love for Animal Crossing fans",
+    "newIslandName": "My Island {{index}}",
+    "inspirationsChip": "{{count}} saved reference images",
+    "importHidChip": "Import a HID share image"
+  },
+  "gallery": {
+    "title": "Templates",
+    "subtitle": "Pick a starting point",
+    "subtitleDesc": "Each template is a complete design. Apply it and tweak freely in the editor.",
+    "filterAll": "All styles",
+    "itemCount": "{{count}} items",
+    "apply": "Apply to canvas"
+  },
+  "editor": {
+    "defaultName": "My Island",
+    "panelTabs": {
+      "layers": "Layers",
+      "ai": "AI",
+      "preview3d": "3D",
+      "shopping": "List"
+    },
+    "panelToggle": {
+      "items": "Items",
+      "panels": "Panel"
+    },
+    "collapseLeft": "Collapse item library",
+    "expandLeft": "Expand item library",
+    "collapseRight": "Collapse right panel",
+    "expandRight": "Expand right panel",
+    "autoSaved": "Auto-saved",
+    "clearAll": "Clear",
+    "clearConfirm": "Clear the entire canvas?"
+  },
+  "toolbar": {
+    "select": "Select (V)",
+    "terrainBrush": "Terrain Brush (B)",
+    "terrainRect": "Rectangle Fill",
+    "erase": "Eraser (E)",
+    "pan": "Pan (H)",
+    "undo": "Undo (Ctrl+Z)",
+    "redo": "Redo (Ctrl+Y)",
+    "rotate": "Rotate Selected (R)",
+    "deleteSelected": "Delete Selected (Del)",
+    "toggleGrid": "Show/Hide Grid",
+    "terrainLabel": "Terrain:",
+    "brush": "Brush"
+  },
+  "palette": {
+    "title": "Items",
+    "search": "Search items...",
+    "empty": "No matching items",
+    "hint": "Tip: Click an item then click on the canvas to place. Click again to deselect.",
+    "categories": {
+      "building": "Buildings",
+      "bridge": "Bridges",
+      "incline": "Inclines",
+      "tree": "Trees",
+      "flower": "Flowers",
+      "fence": "Fences",
+      "furniture": "Furniture",
+      "decoration": "Décor"
+    }
+  },
+  "layers": {
+    "title": "Layers",
+    "subtitle": "Toggle visibility and lock per layer",
+    "show": "Show",
+    "hide": "Hide",
+    "lock": "Lock",
+    "unlock": "Unlock",
+    "hint": "Tip: The amber border marks the active layer. Terrain is the bottom layer, then path, building, décor.",
+    "names": {
+      "terrain": "Terrain",
+      "path": "Path",
+      "building": "Building",
+      "decoration": "Décor"
+    }
+  },
+  "ai": {
+    "title": "AI Suggestions",
+    "subtitle": "Pick a style and let AI draft a layout",
+    "style": "Style",
+    "density": "Density",
+    "densitySparse": "Sparse",
+    "densityMedium": "Medium",
+    "densityDense": "Dense",
+    "scope": "Scope",
+    "scopeFull": "Whole island",
+    "scopeArea": "Selected area",
+    "generate": "Generate",
+    "previewTitle": "Preview",
+    "previewCount": "{{count}} new items",
+    "previewHint": "The proposal is generated but not applied yet. Regenerate variants, accept all or part.",
+    "acceptAll": "Accept all",
+    "acceptHalf": "Accept 50%",
+    "acceptQuarter": "Accept 25%",
+    "regenerate": "Try another",
+    "discard": "Discard",
+    "footer": "Current engine is rule-based (MVP). LLM API (GPT/Claude) integration is planned."
+  },
+  "shopping": {
+    "title": "Shopping List",
+    "subtitle": "{{count}} items · {{kinds}} kinds",
+    "empty": "Nothing on the canvas yet.\nPick an item from the left to start.",
+    "totalGold": "Total Bells (est.)",
+    "diy": "DIY recipe",
+    "shop": "Shop",
+    "exportTitle": "{{name}} - Shopping List",
+    "exportHead": "Total {{count}} items, est. {{gold}} bells"
+  },
+  "canvas": {
+    "zoom": "Zoom {{value}}%",
+    "coord": "Coord ({{x}}, {{y}})",
+    "size": "Canvas {{cols}}×{{rows}}",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "reset": "Reset view"
+  },
+  "preview3d": {
+    "resetCamera": "Reset view (N up)"
+  },
+  "terrain": {
+    "grass": "Grass",
+    "sand": "Sand",
+    "water": "Water",
+    "pathStone": "Stone Path",
+    "pathWood": "Wood Path",
+    "pathBrick": "Brick Path",
+    "cliff1": "Cliff Lv1",
+    "cliff2": "Cliff Lv2",
+    "cliff3": "Cliff Lv3",
+    "flowerBed": "Flower Bed"
+  },
+  "styles": {
+    "japanese": {
+      "name": "Japanese Garden",
+      "desc": "Stone lanterns, bamboo groves, cherry blossoms and koi ponds — serene Eastern aesthetics."
+    },
+    "garden": {
+      "name": "Country Cottage",
+      "desc": "Wooden fences, windmills, fruit trees and flower beds — warm rural vibes."
+    },
+    "fairy": {
+      "name": "Fairy Forest",
+      "desc": "Mushrooms, lanterns, log benches around a campfire — fairy tale forest charm."
+    },
+    "cafe": {
+      "name": "Café Street",
+      "desc": "Brick paths, street lights, vintage phone booths and outdoor café seating — romantic city corner."
+    },
+    "modern": {
+      "name": "Modern Minimal",
+      "desc": "Geometric sculptures, iron fences, fountains and clean lights — crisp modern feel."
+    }
+  },
+  "templates": {
+    "tpl_japanese_zen": {
+      "name": "Zen Japanese Garden",
+      "desc": "Cherry trees, stone lanterns and a koi pond compose a tranquil Japanese garden."
+    },
+    "tpl_garden_farm": {
+      "name": "Cottage Farm Yard",
+      "desc": "Windmills, fruit trees, vegetable patches and wooden fences — slow rural living."
+    },
+    "tpl_fairy_forest": {
+      "name": "Fairy Forest Camp",
+      "desc": "Mushrooms and a campfire deep in a pine forest, a lantern path to a mysterious camp."
+    },
+    "tpl_cafe_street": {
+      "name": "Parisian Café Street",
+      "desc": "Outdoor café seating along brick paths, vintage phone booths and street lights."
+    },
+    "tpl_modern_minimal": {
+      "name": "Modern Minimal Plaza",
+      "desc": "Fountains, sculptures and iron fences form a clean, minimal plaza."
+    }
+  },
+  "sources": {
+    "main": "Main story",
+    "mainShort": "Main story",
+    "core": "Core",
+    "invite": "Invite villager",
+    "build": "Build",
+    "cutting": "Cut/transplant sapling",
+    "sapling": "Sapling",
+    "spring": "Spring event",
+    "beach": "Plant on beach",
+    "mystery": "Mystery Island",
+    "fruit": "Fruit tree",
+    "leif": "Leif",
+    "plant": "Plant",
+    "shop": "Shop",
+    "nookShop": "Nook Shop"
+  },
+  "items": {
+    "resident_services": "Resident Services",
+    "museum": "Museum",
+    "tailor_shop": "Able Sisters",
+    "nooks_cranny": "Nook's Cranny",
+    "campsite": "Campsite",
+    "house_player": "Player House",
+    "house_villager": "Villager House",
+    "bridge_wooden": "Wooden Bridge",
+    "bridge_stone": "Stone Bridge",
+    "bridge_brick": "Brick Bridge",
+    "incline_wood": "Wood Incline",
+    "incline_stone": "Stone Incline",
+    "tree_oak": "Hardwood Tree",
+    "tree_pine": "Cedar Tree",
+    "tree_cherry": "Cherry Tree",
+    "tree_palm": "Palm Tree",
+    "bamboo": "Bamboo",
+    "tree_fruit_apple": "Apple Tree",
+    "shrub": "Shrub",
+    "flower_rose_red": "Red Rose",
+    "flower_rose_white": "White Rose",
+    "flower_tulip_yellow": "Yellow Tulip",
+    "flower_tulip_pink": "Pink Tulip",
+    "flower_lily_white": "White Lily",
+    "flower_cosmos_pink": "Pink Cosmos",
+    "flower_hyacinth_blue": "Blue Hyacinth",
+    "flower_mum_white": "White Mum",
+    "fence_bamboo": "Bamboo Fence",
+    "fence_wood": "Wooden Fence",
+    "fence_iron": "Iron Fence",
+    "fence_log": "Log Fence",
+    "stone_lantern": "Stone Lantern",
+    "zen_bell": "Bell Tower",
+    "tea_table": "Tea Table",
+    "cafe_chair": "Café Chair",
+    "parasol": "Beach Parasol",
+    "bench_wooden": "Wooden Bench",
+    "streetlight": "Street Light",
+    "fountain": "Fountain",
+    "windmill": "Windmill",
+    "mailbox": "Mailbox",
+    "campfire": "Campfire",
+    "tent": "Tent",
+    "log_bench": "Log Bench",
+    "sandbox": "Sandbox",
+    "swing": "Swing",
+    "koi_pond": "Koi Pond Décor",
+    "torii_gate": "Torii Gate",
+    "rock_garden": "Rock Garden",
+    "flag_pole": "Flag Pole",
+    "phone_booth": "Phone Booth",
+    "planter_box": "Planter Box",
+    "lamp_post_garden": "Garden Lamp Post",
+    "mushroom_deco": "Mushroom Décor",
+    "water_well": "Water Well",
+    "modern_sculpture": "Modern Sculpture"
+  },
+  "recognize": {
+    "headerTitle": "Image Recognition",
+    "headerSettings": "AI Settings",
+    "headerSettingsShort": "Settings",
+    "noKeyTitle": "AI service not configured",
+    "noKeyDesc": "Image recognition needs a multimodal LLM. We use BYOK (Bring Your Own Key): your key stays on this device. We recommend Gemini 2.0 Flash (Google AI Studio has a free tier; ≈ $0.0002 per image).",
+    "noKeyCta": "Configure",
+    "uploadPrompt": "Upload a reference image",
+    "uploadDesc": "Top-down maps / 3D screenshots / Pinterest pictures all work.\nDrop here or click to pick.",
+    "hideImage": "Hide image",
+    "showImage": "Show image",
+    "startRecognize": "Recognize",
+    "recognizing": "AI is analysing…",
+    "errorNotImage": "Please upload an image file.",
+    "errorFallback": "Recognition failed. Please try again.",
+    "tipsTitle": "Tips",
+    "tip1": "Top-down views give the best results (NookPhone capture / HID export).",
+    "tip2": "3D shots reveal style + visible items but not grid positions.",
+    "tip3": "Clearer image, more visible items, better results.",
+    "tip4": "Currently mapped to the 60 curated items; 2000+ NH library is the next step.",
+    "emptyTitle": "Results will appear here",
+    "emptyDesc": "Upload → recognize → get style breakdown, item list, and a one-click apply to canvas.",
+    "loadingTitle": "{{model}} analysing…",
+    "loadingDesc": "Usually 3–10 seconds.",
+    "stylesTitle": "Style match",
+    "densityChip": "Density: {{density}}",
+    "itemsHeader": "{{kinds}} kinds detected · {{selectedKinds}} selected / {{totalCount}} items",
+    "itemsEmpty": "No specific items detected. Try another image.",
+    "unmatched": "Unmatched",
+    "unmatchedTooltip": "No counterpart in the local catalog",
+    "matchExpand": "+{{count}} more",
+    "matchCollapse": "Collapse",
+    "recognized": "Conf. {{value}}%",
+    "matched": "Match {{value}}%",
+    "exportShoppingList": "Export List",
+    "applyToCanvas": "Apply to New Island",
+    "exportTitle": "ACNH Image Recognition – Shopping List",
+    "exportGeneratedAt": "Generated at {{datetime}}",
+    "exportStyle": "Style: {{styles}}",
+    "exportDescription": "Description: {{description}}",
+    "exportDensity": "Density: {{density}}",
+    "designNamePrefix": "Recognized Island {{time}}",
+    "density": {
+      "sparse": "sparse",
+      "medium": "medium",
+      "dense": "dense"
+    },
+    "skippedToast": "{{placed}} items placed; {{skipped}} couldn't fit (overlap or no local match).",
+    "skippedToastDismiss": "Got it"
+  },
+  "settings": {
+    "title": "AI Settings",
+    "privacyNote": "Your API key stays in this browser only. It is never sent to our servers. Every call is made directly from your browser to the model API.",
+    "providerLabel": "Provider",
+    "providerGemini": "Google Gemini",
+    "providerOpenAI": "OpenAI",
+    "providerAnthropic": "Anthropic",
+    "pricingGemini": "Gemini 2.0 Flash: input ≈ $0.075/M tokens; ≈ $0.0002 per image",
+    "pricingOpenAI": "GPT-4o-mini: input $0.15/M tokens; ≈ $0.001 per image",
+    "pricingAnthropic": "Claude Haiku: input $0.80/M tokens; ≈ $0.003 per image",
+    "modelLabel": "Model",
+    "apiKeyLabel": "API Key",
+    "apiKeyDocsGemini": "Google AI Studio (free tier)",
+    "apiKeyDocsOpenAI": "OpenAI Platform",
+    "apiKeyDocsAnthropic": "Anthropic Console",
+    "apiKeyShow": "Show",
+    "apiKeyHide": "Hide",
+    "customEndpointLabel": "Custom Endpoint",
+    "customEndpointOptional": "(optional, OpenAI-compatible)",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "inspirations": {
+    "title": "Inspirations",
+    "subtitleCount": "{{count}} saved references",
+    "subtitleDesc": "Every successful recognition is auto-saved here so you can revisit, re-apply, or export anytime. Data stays in this browser only.",
+    "emptyTitle": "No inspirations yet",
+    "emptyDesc": "Drop a Pinterest or Reddit island screenshot into Recognize and it will be saved here automatically.",
+    "applyAction": "Apply to new island",
+    "kindsBadge": "{{count}} kinds",
+    "itemsHeader": "{{count}} item types recognised",
+    "detailTitle": "Inspiration details",
+    "clearAll": "Clear all",
+    "clearAllTitle": "Clear inspirations library?",
+    "clearAllConfirm": "This will permanently delete all {{count}} saved references.",
+    "deleteTitle": "Remove this inspiration?",
+    "deleteConfirm": "Remove this reference image from your inspirations library? This cannot be undone."
+  },
+  "importHid": {
+    "headerTitle": "Import HID share image",
+    "subtitle": "Happy Island Designer PNG decoder",
+    "subtitleDesc": "Drop a PNG exported from HID to inspect its objects, terrain layers and metadata. You can also download the full JSON payload.",
+    "previewOnlyTitle": "Preview-only for now",
+    "previewOnlyDesc": "HID uses its own object vocabulary; mapping it onto our editor needs a translation table — that's queued for a later release.",
+    "uploadPrompt": "Upload a HID PNG",
+    "uploadDesc": "Drop here or click to choose\n(Must be the original HID export — screenshots / JPEG re-saves wipe the hidden data)",
+    "tipsTitle": "Tips",
+    "tip1": "HID hides the island JSON inside the PNG's alpha channel.",
+    "tip2": "Most chat apps re-encode images as JPEG; share the file directly.",
+    "tip3": "The downloaded JSON loads in the official HID web app as-is.",
+    "emptyTitle": "The decoded summary appears here",
+    "emptyDesc": "Upload a PNG → it decodes automatically → you'll see the island contents and a JSON download.",
+    "loading": "Decoding…",
+    "version": "Format {{version}}",
+    "totalObjects": "{{count}} objects total",
+    "drawingLayers": "{{count}} terrain/path layers",
+    "edgeTiles": "{{count}} edge tiles",
+    "objectsHeader": "Object distribution",
+    "objectsEmpty": "No objects found — likely an empty map.",
+    "downloadJson": "Download JSON",
+    "errorNotPng": "Please upload a PNG file.",
+    "errorNoPayload": "No HID payload found inside the PNG. The file isn't a HID export, or it was screenshotted / re-saved as JPEG, which destroys the hidden data.",
+    "errorCorrupt": "The hidden payload is corrupted or not a HID map.",
+    "errorImage": "Couldn't read the image. Try another file."
+  }
+}

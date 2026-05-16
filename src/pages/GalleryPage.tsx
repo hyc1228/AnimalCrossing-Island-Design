@@ -1,21 +1,26 @@
 import { useMemo, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ChevronLeft, Wand2 } from 'lucide-react';
+import { Button as AIButton, Card as AICard, Footer as AIFooter, Divider as AIDivider, Icon as AIIcon } from 'animal-island-ui';
 import { getTemplates } from '../data/templates';
 import { createDesign } from '../utils/grid';
 import { saveDesign, setCurrentDesignId } from '../utils/storage';
 import type { TemplateDef } from '../types';
 import { STYLES } from '../ai/styles';
+import { styleName, templateDesc, templateName } from '../i18n/helpers';
+import LanguageSwitcher from '../components/LanguageSwitcher/LanguageSwitcher';
 
 export default function GalleryPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [filterStyle, setFilterStyle] = useState<TemplateDef['style'] | 'all'>('all');
 
   const templates = useMemo(() => getTemplates(), []);
-  const filtered = templates.filter((t) => filterStyle === 'all' || t.style === filterStyle);
+  const filtered = templates.filter((tpl) => filterStyle === 'all' || tpl.style === filterStyle);
 
   const applyTemplate = (tpl: TemplateDef) => {
-    const d = createDesign(tpl.name);
+    const d = createDesign(templateName(tpl.id, tpl.name, t));
     d.items = tpl.design.items.map((i) => ({ ...i }));
     d.terrain = tpl.design.terrain.map((r) => r.slice());
     saveDesign(d);
@@ -24,24 +29,30 @@ export default function GalleryPage() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col">
-      <header className="px-6 lg:px-12 py-6 flex items-center justify-between">
+    <div className="min-h-screen w-full flex flex-col relative">
+      <header className="px-6 lg:px-12 py-6 flex items-center justify-between flex-wrap gap-3 relative z-10">
         <Link to="/" className="btn-ghost">
-          <ChevronLeft size={16} /> 首页
+          <ChevronLeft size={16} /> {t('common.home')}
         </Link>
-        <h1 className="text-xl font-extrabold text-leaf-800">模板库</h1>
-        <div className="w-16" />
+        <h1 className="text-xl font-extrabold text-leaf-800 flex items-center gap-2">
+          <AIIcon name="icon-map" size={28} /> {t('gallery.title')}
+        </h1>
+        <LanguageSwitcher />
       </header>
 
-      <main className="px-6 lg:px-12 pb-12 max-w-6xl mx-auto w-full">
-        <div className="text-center max-w-xl mx-auto mb-8">
-          <h2 className="text-2xl lg:text-3xl font-bold text-leaf-900">挑一个起点</h2>
-          <p className="mt-2 text-leaf-700/80">每个模板都是完整的方案，套用后可在编辑器中自由调整。</p>
+      <main className="flex-1 px-6 lg:px-12 pb-40 max-w-6xl mx-auto w-full relative z-10">
+        <div className="flex flex-col items-center text-center mb-8">
+          <AICard type="title" className="!px-7 !py-2 mb-4">
+            <span className="text-sm font-bold text-leaf-800">{t('gallery.subtitle')}</span>
+          </AICard>
+          <p className="text-leaf-700/85 max-w-xl">{t('gallery.subtitleDesc')}</p>
         </div>
+
+        <AIDivider type="wave-yellow" style={{ marginBottom: 24 }} />
 
         <div className="flex items-center justify-center gap-2 flex-wrap mb-6">
           <FilterChip active={filterStyle === 'all'} onClick={() => setFilterStyle('all')}>
-            全部风格
+            {t('gallery.filterAll')}
           </FilterChip>
           {STYLES.map((s) => (
             <FilterChip
@@ -49,7 +60,7 @@ export default function GalleryPage() {
               active={filterStyle === s.id}
               onClick={() => setFilterStyle(s.id)}
             >
-              {s.emoji} {s.name}
+              {s.emoji} {styleName(s.id, t)}
             </FilterChip>
           ))}
         </div>
@@ -60,6 +71,10 @@ export default function GalleryPage() {
           ))}
         </div>
       </main>
+
+      <div className="fixed inset-x-0 bottom-0 pointer-events-none z-0">
+        <AIFooter type="sea" />
+      </div>
     </div>
   );
 }
@@ -74,41 +89,42 @@ function FilterChip({
   onClick: () => void;
 }) {
   return (
-    <button
+    <AIButton
+      size="small"
+      type={active ? 'primary' : 'default'}
       onClick={onClick}
-      className={`px-3 py-1.5 rounded-full text-sm font-semibold transition ${
-        active ? 'bg-leaf-500 text-white shadow-soft' : 'bg-white text-leaf-700 border border-leaf-100 hover:bg-leaf-50'
-      }`}
     >
       {children}
-    </button>
+    </AIButton>
   );
 }
 
 function TemplateCard({ tpl, onApply }: { tpl: TemplateDef; onApply: () => void }) {
+  const { t } = useTranslation();
   const styleDef = STYLES.find((s) => s.id === tpl.style);
   return (
-    <div className="card overflow-hidden flex flex-col">
+    <AICard className="overflow-hidden flex flex-col !p-0 hover:-translate-y-1 transition-transform">
       <ThumbnailPreview tpl={tpl} />
       <div className="p-4 flex flex-col gap-2 flex-1">
         <div className="flex items-center gap-2">
           <span className="text-2xl">{styleDef?.emoji}</span>
-          <h3 className="font-bold text-leaf-800">{tpl.name}</h3>
+          <h3 className="font-bold text-leaf-800">{templateName(tpl.id, tpl.name, t)}</h3>
         </div>
-        <p className="text-sm text-leaf-700/80 flex-1 leading-relaxed">{tpl.description}</p>
+        <p className="text-sm text-leaf-700/85 flex-1 leading-relaxed">{templateDesc(tpl.id, tpl.description, t)}</p>
         <div className="flex items-center justify-between mt-2">
-          <span className="chip bg-leaf-50 text-leaf-700">{tpl.design.items.length} 个物品</span>
-          <button onClick={onApply} className="btn-primary text-sm">
-            <Wand2 size={14} /> 套用到画布
-          </button>
+          <span className="chip-mint">
+            {t('gallery.itemCount', { count: tpl.design.items.length })}
+          </span>
+          <AIButton type="primary" size="small" onClick={onApply} icon={<Wand2 size={14} />}>
+            {t('gallery.apply')}
+          </AIButton>
         </div>
       </div>
-    </div>
+    </AICard>
   );
 }
 
 function ThumbnailPreview({ tpl }: { tpl: TemplateDef }) {
-  // Render a tiny preview using svg
   const cols = tpl.design.size.cols;
   const rows = tpl.design.size.rows;
   const W = 320;
@@ -117,7 +133,6 @@ function ThumbnailPreview({ tpl }: { tpl: TemplateDef }) {
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="w-full aspect-[8/7] bg-leaf-200" preserveAspectRatio="none">
       <rect x={0} y={0} width={W} height={H} fill="#8fc662" rx={6} />
-      {/* terrain non-grass */}
       {tpl.design.terrain.map((row, y) =>
         row.map((code, x) => {
           if (code === 0) return null;
@@ -133,7 +148,6 @@ function ThumbnailPreview({ tpl }: { tpl: TemplateDef }) {
           );
         }),
       )}
-      {/* items */}
       {tpl.design.items.map((it) => (
         <rect
           key={it.id}
@@ -150,7 +164,6 @@ function ThumbnailPreview({ tpl }: { tpl: TemplateDef }) {
 }
 
 function terrainHex(code: number): string {
-  // Mirrors IslandCanvas TERRAIN_COLOR
   const map: Record<number, string> = {
     1: '#f2dba4',
     2: '#76c4e8',
@@ -166,8 +179,6 @@ function terrainHex(code: number): string {
 }
 
 function itemColor(_key: string): string {
-  // Fallback - imported items color requires full import, but for thumbnails this gives variety
-  // We'll use a deterministic color from the key
   let hash = 0;
   for (let i = 0; i < _key.length; i++) hash = (hash * 31 + _key.charCodeAt(i)) >>> 0;
   const palette = ['#d9a35b', '#b08968', '#e07a5f', '#f4a261', '#3a6a2b', '#2f5a23', '#f7b5c4', '#6b8e23', '#d94c4c', '#f1c40f', '#5b9bd5', '#8b5a2b', '#6d4c41', '#a0744f', '#888888', '#a0522d'];

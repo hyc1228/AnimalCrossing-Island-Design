@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { Stage, Layer, Rect, Group, Line, Circle, Ellipse } from 'react-konva';
+import { useTranslation } from 'react-i18next';
 import type Konva from 'konva';
 import { useCanvasStore } from '../../stores/canvasStore';
 import { useUIStore } from '../../stores/uiStore';
@@ -50,6 +51,7 @@ interface IslandCanvasProps {
 }
 
 export default function IslandCanvas({ width, height }: IslandCanvasProps) {
+  const { t } = useTranslation();
   const design = useCanvasStore((s) => s.design);
   const tool = useCanvasStore((s) => s.tool);
   const selectedItemKey = useCanvasStore((s) => s.selectedItemKey);
@@ -545,41 +547,37 @@ export default function IslandCanvas({ width, height }: IslandCanvasProps) {
 
       {/* Coordinate / zoom info */}
       <div className="absolute bottom-3 left-3 panel px-3 py-1.5 text-xs text-leaf-700 flex items-center gap-4">
-        <span>缩放 {(scale * 100).toFixed(0)}%</span>
+        <span>{t('canvas.zoom', { value: (scale * 100).toFixed(0) })}</span>
         {hoverCell && (
-          <span>
-            坐标 ({hoverCell.x}, {hoverCell.y})
-          </span>
+          <span>{t('canvas.coord', { x: hoverCell.x, y: hoverCell.y })}</span>
         )}
-        <span>
-          画布 {design.size.cols}×{design.size.rows}
-        </span>
+        <span>{t('canvas.size', { cols: design.size.cols, rows: design.size.rows })}</span>
       </div>
 
-      <div className="absolute bottom-3 right-3 flex flex-col gap-1">
+      <div className="absolute bottom-3 right-3 flex flex-col gap-1.5">
         <button
-          className="panel w-8 h-8 grid place-items-center text-leaf-700 hover:bg-leaf-50"
+          className="panel w-9 h-9 grid place-items-center font-bold text-leaf-700 hover:text-mint-600 hover:bg-mint-500/12 transition"
           onClick={() => setScale((s) => Math.min(3, s * 1.2))}
-          title="放大"
+          title={t('canvas.zoomIn')}
         >
           +
         </button>
         <button
-          className="panel w-8 h-8 grid place-items-center text-leaf-700 hover:bg-leaf-50"
+          className="panel w-9 h-9 grid place-items-center font-bold text-leaf-700 hover:text-mint-600 hover:bg-mint-500/12 transition"
           onClick={() => setScale((s) => Math.max(0.4, s / 1.2))}
-          title="缩小"
+          title={t('canvas.zoomOut')}
         >
           −
         </button>
         <button
-          className="panel w-8 h-8 grid place-items-center text-xs text-leaf-700 hover:bg-leaf-50"
+          className="panel w-9 h-9 grid place-items-center text-[10px] font-bold text-leaf-700 hover:text-mint-600 hover:bg-mint-500/12 transition"
           onClick={() => {
             setScale(1);
             const cw = design.size.cols * CELL;
             const ch = design.size.rows * CELL;
             setStagePos({ x: (width - cw) / 2, y: (height - ch) / 2 });
           }}
-          title="重置视图"
+          title={t('canvas.reset')}
         >
           1:1
         </button>

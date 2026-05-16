@@ -1,0 +1,422 @@
+{
+  "app": {
+    "name": "アイランドプランナー",
+    "tagline": "Animal Crossing Island Planner"
+  },
+  "common": {
+    "cancel": "キャンセル",
+    "confirm": "OK",
+    "delete": "削除",
+    "open": "開く",
+    "close": "閉じる",
+    "save": "保存",
+    "export": "エクスポート",
+    "back": "戻る",
+    "home": "ホーム"
+  },
+  "language": {
+    "label": "言語",
+    "switch": "言語を切り替える"
+  },
+  "home": {
+    "tag": "島クリエイトをもっと楽しく",
+    "heroLine1": "まず計画、そして実装。",
+    "heroLine2": "もう何度も",
+    "heroAccent": "壊して建て直す",
+    "subtitle": "トップビュー・グリッド · 5つの厳選テンプレート · AIレイアウト提案 · 3Dプレビューと家具リスト",
+    "newIsland": "新しい島",
+    "continueLast": "前回の続き",
+    "browseTemplates": "テンプレートを見る",
+    "recognizeImage": "画像から認識",
+    "features": {
+      "recognize": {
+        "title": "画像から認識",
+        "desc": "Pinterest・小紅書の素敵な写真をアップ → AIが家具リスト・スタイル・配置案を出します。",
+        "badge": "新"
+      },
+      "canvas": {
+        "title": "グリッドキャンバス",
+        "desc": "80×70のトップビュー・グリッドと4つのレイヤー。地形・道・家具を自由に配置。"
+      },
+      "ai": {
+        "title": "AIレイアウト提案",
+        "desc": "スタイルを選ぶだけ。AIが島全体または選択範囲のレイアウトを自動生成します。"
+      },
+      "preview": {
+        "title": "3Dプレビュー",
+        "desc": "立体表示で空間を確認。家具リストを出して実装に活用できます。"
+      }
+    },
+    "myDesigns": "マイ・アイランド",
+    "designCount": "{{count}}件",
+    "designMeta": "アイテム {{count}}個 · {{updated}}",
+    "openEdit": "編集を開く",
+    "deleteConfirm": "この島デザインを削除しますか？元に戻せません。",
+    "footer": "本ツールは任天堂と無関係です · ファン向けコミュニティツール · Made with love for Animal Crossing fans",
+    "newIslandName": "わたしの島 {{index}}",
+    "inspirationsChip": "ライブラリに {{count}} 枚の参考画像",
+    "importHidChip": "HID 共有画像を読み込む"
+  },
+  "gallery": {
+    "title": "テンプレート",
+    "subtitle": "スタートを選ぶ",
+    "subtitleDesc": "各テンプレートは完成形。適用後、エディタで自由にカスタムできます。",
+    "filterAll": "すべて",
+    "itemCount": "アイテム {{count}}個",
+    "apply": "キャンバスに適用"
+  },
+  "editor": {
+    "defaultName": "わたしの島",
+    "panelTabs": {
+      "layers": "レイヤー",
+      "ai": "AI",
+      "preview3d": "3D",
+      "shopping": "リスト"
+    },
+    "panelToggle": {
+      "items": "アイテム",
+      "panels": "パネル"
+    },
+    "collapseLeft": "アイテムを閉じる",
+    "expandLeft": "アイテムを開く",
+    "collapseRight": "右パネルを閉じる",
+    "expandRight": "右パネルを開く",
+    "autoSaved": "自動保存",
+    "clearAll": "クリア",
+    "clearConfirm": "キャンバス全体をクリアしますか？"
+  },
+  "toolbar": {
+    "select": "選択 (V)",
+    "terrainBrush": "地形ブラシ (B)",
+    "terrainRect": "矩形塗り",
+    "erase": "消しゴム (E)",
+    "pan": "移動 (H)",
+    "undo": "元に戻す (Ctrl+Z)",
+    "redo": "やり直し (Ctrl+Y)",
+    "rotate": "選択を回転 (R)",
+    "deleteSelected": "選択を削除 (Del)",
+    "toggleGrid": "グリッド表示切替",
+    "terrainLabel": "地形:",
+    "brush": "ブラシ"
+  },
+  "palette": {
+    "title": "アイテム",
+    "search": "アイテムを検索...",
+    "empty": "一致するアイテムなし",
+    "hint": "ヒント：アイテムを選択してキャンバスをクリックで配置。もう一度クリックで解除。",
+    "categories": {
+      "building": "建物",
+      "bridge": "橋",
+      "incline": "坂",
+      "tree": "木",
+      "flower": "花",
+      "fence": "柵",
+      "furniture": "家具",
+      "decoration": "装飾"
+    }
+  },
+  "layers": {
+    "title": "レイヤー",
+    "subtitle": "表示とロックを切替",
+    "show": "表示",
+    "hide": "非表示",
+    "lock": "ロック",
+    "unlock": "ロック解除",
+    "hint": "ヒント：アンバーの枠が現在のレイヤー。下から地形・道・建物・装飾の順。",
+    "names": {
+      "terrain": "地形",
+      "path": "道",
+      "building": "建物",
+      "decoration": "装飾"
+    }
+  },
+  "ai": {
+    "title": "AIレイアウト提案",
+    "subtitle": "スタイルを選んでAIに任せる",
+    "style": "スタイル",
+    "density": "密度",
+    "densitySparse": "ゆるい",
+    "densityMedium": "ふつう",
+    "densityDense": "密集",
+    "scope": "範囲",
+    "scopeFull": "島全体",
+    "scopeArea": "指定範囲",
+    "generate": "生成する",
+    "previewTitle": "プレビュー",
+    "previewCount": "新規アイテム {{count}}個",
+    "previewHint": "提案は生成済みですがまだ適用されていません。再生成、全部または一部を採用できます。",
+    "acceptAll": "全部採用",
+    "acceptHalf": "50%採用",
+    "acceptQuarter": "25%採用",
+    "regenerate": "もう一つ",
+    "discard": "破棄",
+    "footer": "現在はルールベース（MVP）。今後 GPT/Claude API への接続を予定。"
+  },
+  "shopping": {
+    "title": "アイテムリスト",
+    "subtitle": "{{count}}個 · {{kinds}}種類",
+    "empty": "キャンバスにはまだアイテムがありません。\n左のリストから選んでください。",
+    "totalGold": "合計ベル（推定）",
+    "diy": "DIYレシピ",
+    "shop": "お店",
+    "exportTitle": "{{name}} - アイテムリスト",
+    "exportHead": "合計 {{count}}個、推定 {{gold}}ベル"
+  },
+  "canvas": {
+    "zoom": "ズーム {{value}}%",
+    "coord": "座標 ({{x}}, {{y}})",
+    "size": "キャンバス {{cols}}×{{rows}}",
+    "zoomIn": "拡大",
+    "zoomOut": "縮小",
+    "reset": "ビューリセット"
+  },
+  "preview3d": {
+    "resetCamera": "視点リセット（N 上）"
+  },
+  "terrain": {
+    "grass": "草地",
+    "sand": "砂地",
+    "water": "水域",
+    "pathStone": "石畳の道",
+    "pathWood": "木の道",
+    "pathBrick": "レンガの道",
+    "cliff1": "崖 Lv1",
+    "cliff2": "崖 Lv2",
+    "cliff3": "崖 Lv3",
+    "flowerBed": "花畑"
+  },
+  "styles": {
+    "japanese": {
+      "name": "和風庭園",
+      "desc": "石灯篭、竹林、桜、錦鯉の池。静かで上品な和の美。"
+    },
+    "garden": {
+      "name": "田舎のコテージ",
+      "desc": "木の柵、風車、果樹と花畑の温かな田舎風。"
+    },
+    "fairy": {
+      "name": "メルヘンの森",
+      "desc": "キノコ、ランタン、丸太のベンチと焚き火。森の奥のおとぎ話。"
+    },
+    "cafe": {
+      "name": "カフェ街",
+      "desc": "レンガ道、街灯、レトロ電話ボックスとオープンカフェ。ロマンチックな街角。"
+    },
+    "modern": {
+      "name": "モダンミニマル",
+      "desc": "幾何的な彫刻、鉄柵、噴水、ミニマルな街灯。すっきりした現代感。"
+    }
+  },
+  "templates": {
+    "tpl_japanese_zen": {
+      "name": "禅の和風庭園",
+      "desc": "桜、石灯篭、錦鯉の池で構成された静かな和の庭園。"
+    },
+    "tpl_garden_farm": {
+      "name": "田舎のコテージ",
+      "desc": "風車、果樹、菜園と木柵に囲まれたスローライフな雰囲気。"
+    },
+    "tpl_fairy_forest": {
+      "name": "メルヘンの森キャンプ",
+      "desc": "松林の奥のキノコと焚き火。ランタンの小道が秘密の野営地へ。"
+    },
+    "tpl_cafe_street": {
+      "name": "パリのカフェ街",
+      "desc": "レンガ道沿いのオープンカフェ、レトロ電話ボックスと街灯。"
+    },
+    "tpl_modern_minimal": {
+      "name": "モダンミニマル広場",
+      "desc": "噴水、彫刻、鉄柵で構成された洗練された広場。"
+    }
+  },
+  "sources": {
+    "main": "メインストーリー",
+    "mainShort": "メイン",
+    "core": "コア",
+    "invite": "住民を招く",
+    "build": "建造",
+    "cutting": "苗木を切る／移植",
+    "sapling": "苗木",
+    "spring": "春のイベント",
+    "beach": "ビーチに植える",
+    "mystery": "離島ツアー",
+    "fruit": "果樹",
+    "leif": "レイ",
+    "plant": "植える",
+    "shop": "お店",
+    "nookShop": "たぬきショッピング"
+  },
+  "items": {
+    "resident_services": "案内所",
+    "museum": "博物館",
+    "tailor_shop": "エイブルシスターズ",
+    "nooks_cranny": "タヌキ商店",
+    "campsite": "キャンプサイト",
+    "house_player": "プレイヤーの家",
+    "house_villager": "住民の家",
+    "bridge_wooden": "木の橋",
+    "bridge_stone": "石の橋",
+    "bridge_brick": "レンガの橋",
+    "incline_wood": "木のスロープ",
+    "incline_stone": "石のスロープ",
+    "tree_oak": "広葉樹",
+    "tree_pine": "針葉樹",
+    "tree_cherry": "サクラの木",
+    "tree_palm": "ヤシの木",
+    "bamboo": "竹",
+    "tree_fruit_apple": "リンゴの木",
+    "shrub": "低木",
+    "flower_rose_red": "赤いバラ",
+    "flower_rose_white": "白いバラ",
+    "flower_tulip_yellow": "黄色いチューリップ",
+    "flower_tulip_pink": "ピンクのチューリップ",
+    "flower_lily_white": "白いユリ",
+    "flower_cosmos_pink": "ピンクのコスモス",
+    "flower_hyacinth_blue": "青いヒヤシンス",
+    "flower_mum_white": "白いキク",
+    "fence_bamboo": "竹垣",
+    "fence_wood": "木の柵",
+    "fence_iron": "鉄の柵",
+    "fence_log": "丸太の柵",
+    "stone_lantern": "石灯篭",
+    "zen_bell": "鐘楼",
+    "tea_table": "茶卓",
+    "cafe_chair": "カフェチェア",
+    "parasol": "ビーチパラソル",
+    "bench_wooden": "木のベンチ",
+    "streetlight": "街灯",
+    "fountain": "噴水",
+    "windmill": "風車",
+    "mailbox": "ポスト",
+    "campfire": "焚き火",
+    "tent": "テント",
+    "log_bench": "丸太のベンチ",
+    "sandbox": "砂場",
+    "swing": "ブランコ",
+    "koi_pond": "錦鯉の池",
+    "torii_gate": "鳥居",
+    "rock_garden": "枯山水",
+    "flag_pole": "旗ポール",
+    "phone_booth": "電話ボックス",
+    "planter_box": "プランター",
+    "lamp_post_garden": "ガーデンランプ",
+    "mushroom_deco": "キノコの飾り",
+    "water_well": "井戸",
+    "modern_sculpture": "モダン彫刻"
+  },
+  "recognize": {
+    "headerTitle": "画像認識",
+    "headerSettings": "AI 設定",
+    "headerSettingsShort": "設定",
+    "noKeyTitle": "AI サービスが未設定です",
+    "noKeyDesc": "画像認識にはマルチモーダル LLM API が必要です。BYOK 方式で、API Key はこの端末にのみ保存されます。Gemini 2.0 Flash がおすすめ（Google AI Studio に無料枠あり、1 枚あたり約 ¥0.001）。",
+    "noKeyCta": "設定する",
+    "uploadPrompt": "参考画像をアップロード",
+    "uploadDesc": "トップビュー / 3D スクショ / Pinterest / 小紅書 などに対応\nドラッグまたはクリックで選択",
+    "hideImage": "画像を隠す",
+    "showImage": "画像を表示",
+    "startRecognize": "認識開始",
+    "recognizing": "AI が認識中…",
+    "errorNotImage": "画像ファイルをアップロードしてください",
+    "errorFallback": "認識に失敗しました。後でお試しください。",
+    "tipsTitle": "ヒント",
+    "tip1": "トップビューの認識精度が最も高い（NookPhone のスクショ / HID エクスポート等）",
+    "tip2": "3D の美麗ショットはスタイルと見える物品を認識できますが、グリッド位置は復元しません",
+    "tip3": "画像が鮮明で物品が多いほど結果が良くなります",
+    "tip4": "現在は厳選 60 種に紐付け。2000+ NH データベースは次のステップで対応",
+    "emptyTitle": "結果はここに表示されます",
+    "emptyDesc": "画像アップ → 認識 → スタイル分析・物品リスト・ワンクリック適用",
+    "loadingTitle": "{{model}} 分析中…",
+    "loadingDesc": "通常 3〜10 秒",
+    "stylesTitle": "スタイルマッチ",
+    "densityChip": "密度 {{density}}",
+    "itemsHeader": "{{kinds}} 種類検出 · {{selectedKinds}} 種類選択 / {{totalCount}} 個",
+    "itemsEmpty": "具体的な物品は検出されませんでした。別の画像でお試しください。",
+    "unmatched": "未マッチ",
+    "unmatchedTooltip": "ローカル物品リストに対応するものがありません",
+    "matchExpand": "+{{count}} 件",
+    "matchCollapse": "閉じる",
+    "recognized": "信頼度 {{value}}%",
+    "matched": "一致 {{value}}%",
+    "exportShoppingList": "リストを書き出す",
+    "applyToCanvas": "新しい島に適用",
+    "exportTitle": "ACNH 画像認識 - 買い物リスト",
+    "exportGeneratedAt": "生成 {{datetime}}",
+    "exportStyle": "スタイル: {{styles}}",
+    "exportDescription": "説明: {{description}}",
+    "exportDensity": "密度: {{density}}",
+    "designNamePrefix": "認識島 {{time}}",
+    "density": {
+      "sparse": "疎",
+      "medium": "中",
+      "dense": "密"
+    },
+    "skippedToast": "{{placed}} 個配置、{{skipped}} 個は配置できませんでした（重なり、または未マッチ）。",
+    "skippedToastDismiss": "了解"
+  },
+  "settings": {
+    "title": "AI サービス設定",
+    "privacyNote": "API Key はこの端末のブラウザのみに保存され、サーバーに送信されることはありません。各リクエストはブラウザから直接モデル API に送ります。",
+    "providerLabel": "サービス",
+    "providerGemini": "Google Gemini",
+    "providerOpenAI": "OpenAI",
+    "providerAnthropic": "Anthropic",
+    "pricingGemini": "Gemini 2.0 Flash: 入力 ≈ $0.075/M tokens；1枚あたり < ¥0.001",
+    "pricingOpenAI": "GPT-4o-mini: 入力 $0.15/M tokens；1枚あたり ≈ ¥0.005",
+    "pricingAnthropic": "Claude Haiku: 入力 $0.80/M tokens；1枚あたり ≈ ¥0.02",
+    "modelLabel": "モデル",
+    "apiKeyLabel": "API Key",
+    "apiKeyDocsGemini": "Google AI Studio (無料枠)",
+    "apiKeyDocsOpenAI": "OpenAI Platform",
+    "apiKeyDocsAnthropic": "Anthropic Console",
+    "apiKeyShow": "表示",
+    "apiKeyHide": "隠す",
+    "customEndpointLabel": "カスタム Endpoint",
+    "customEndpointOptional": "(任意、OpenAI 互換)",
+    "save": "保存",
+    "cancel": "キャンセル"
+  },
+  "inspirations": {
+    "title": "インスピレーション",
+    "subtitleCount": "{{count}} 枚を保存中",
+    "subtitleDesc": "認識が成功した画像はすべてここに自動保存されます。いつでも見返したり、再利用したり、買い物リストを書き出せます。データはこの端末のブラウザのみに保持。",
+    "emptyTitle": "まだインスピレーションがありません",
+    "emptyDesc": "Pinterest や Reddit の島スクリーンショットを「参考画像から認識」に投げると、ここに自動保存されます。",
+    "applyAction": "新しい島に適用",
+    "kindsBadge": "{{count}} 種類",
+    "itemsHeader": "{{count}} 種類のアイテムを認識",
+    "detailTitle": "インスピレーションの詳細",
+    "clearAll": "すべて削除",
+    "clearAllTitle": "ライブラリを空にしますか？",
+    "clearAllConfirm": "保存済みの {{count}} 枚をすべて削除します。元に戻せません。",
+    "deleteTitle": "このインスピレーションを削除？",
+    "deleteConfirm": "ライブラリからこの参考画像を削除します。元に戻せません。"
+  },
+  "importHid": {
+    "headerTitle": "HID 共有画像を読み込む",
+    "subtitle": "Happy Island Designer PNG デコーダ",
+    "subtitleDesc": "HID からエクスポートした PNG をドロップすると、含まれるオブジェクト、地形レイヤー、メタデータをプレビューできます。完全な JSON もダウンロード可能。",
+    "previewOnlyTitle": "現在はプレビューのみ",
+    "previewOnlyDesc": "HID のオブジェクト分類はこのツールと異なります。完全なインポートには対応表が必要で、次回のリリース予定です。",
+    "uploadPrompt": "HID PNG をアップロード",
+    "uploadDesc": "ここにドロップ、またはクリックして選択\n（HID 純正の書き出し画像のみ対応。スクショや JPEG 化されたものは無効）",
+    "tipsTitle": "ヒント",
+    "tip1": "HID は島の JSON を PNG の alpha チャンネルに隠しています",
+    "tip2": "SNS で送ると JPEG 圧縮されるので、ファイル転送で共有してください",
+    "tip3": "ダウンロードした JSON は HID 公式サイトで開けます",
+    "emptyTitle": "解析結果はここに表示されます",
+    "emptyDesc": "PNG をアップロード → 自動で解析 → 島の概要と JSON ダウンロードが利用可能。",
+    "loading": "デコード中…",
+    "version": "形式 {{version}}",
+    "totalObjects": "オブジェクト {{count}} 個",
+    "drawingLayers": "地形/道 {{count}} 層",
+    "edgeTiles": "島縁タイル {{count}} 個",
+    "objectsHeader": "オブジェクト一覧",
+    "objectsEmpty": "オブジェクトは見つかりませんでした（空の島の可能性）",
+    "downloadJson": "JSON をダウンロード",
+    "errorNotPng": "PNG ファイルをアップロードしてください。",
+    "errorNoPayload": "PNG 内に HID データが見つかりません。HID 純正の書き出しではない、またはスクショ / JPEG 化により隠しデータが失われた可能性があります。",
+    "errorCorrupt": "隠しデータが破損しているか、HID 形式ではありません。",
+    "errorImage": "画像を読み込めませんでした。別のファイルをお試しください。"
+  }
+}

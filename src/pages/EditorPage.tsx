@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   Layers,
   Sparkles,
@@ -9,6 +10,7 @@ import {
   PanelLeftOpen,
   PanelRightClose,
   PanelRightOpen,
+  X as CloseIcon,
 } from 'lucide-react';
 import Toolbar from '../components/Toolbar/Toolbar';
 import IslandCanvas from '../components/Canvas/IslandCanvas';
@@ -24,11 +26,14 @@ import { createDesign } from '../utils/grid';
 
 export default function EditorPage() {
   const { id } = useParams<{ id: string }>();
+  const { t } = useTranslation();
   const loadFromDesign = useCanvasStore((s) => s.loadFromDesign);
   const undo = useCanvasStore((s) => s.undo);
   const redo = useCanvasStore((s) => s.redo);
   const setTool = useCanvasStore((s) => s.setTool);
   const rotateSelected = useCanvasStore((s) => s.rotateSelected);
+
+  const deleteSelected = useCanvasStore((s) => s.deleteSelected);
 
   const rightTab = useUIStore((s) => s.rightTab);
   const setRightTab = useUIStore((s) => s.setRightTab);
@@ -39,6 +44,7 @@ export default function EditorPage() {
 
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const [canvasSize, setCanvasSize] = useState({ width: 800, height: 600 });
+  const [recognizeToast, setRecognizeToast] = useState<{ placed: number; skipped: number } | null>(null);
 
   // Load design on mount
   useEffect(() => {
@@ -48,14 +54,30 @@ export default function EditorPage() {
       loadFromDesign(d);
       setCurrentDesignId(id);
     } else {
-      // Create new one with this id
-      const fresh = createDesign('我的小岛');
+      const fresh = createDesign(t('editor.defaultName'));
       fresh.id = id;
       saveDesign(fresh);
       loadFromDesign(fresh);
       setCurrentDesignId(id);
     }
-  }, [id, loadFromDesign]);
+  }, [id, loadFromDesign, t]);
+
+  // Pick up "skipped count" notice left by RecognizePage → applyToCanvas.
+  useEffect(() => {
+    if (!id) return;
+    try {
+      const raw = sessionStorage.getItem('ac_recognize_skipped');
+      if (!raw) return;
+      const data = JSON.parse(raw) as { placedCount: number; skippedCount: number; designId: string };
+      if (data.designId !== id) return;
+      sessionStorage.removeItem('ac_recognize_skipped');
+      setRecognizeToast({ placed: data.placedCount, skipped: data.skippedCount });
+      const timer = setTimeout(() => setRecognizeToast(null), 10000);
+      return () => clearTimeout(timer);
+    } catch {
+      /* ignore */
+    }
+  }, [id]);
 
   // Resize observer for canvas
   useEffect(() => {
@@ -93,6 +115,12 @@ export default function EditorPage() {
         setTool('erase');
       } else if (e.key === 'h') {
         setTool('pan');
+      } else if (e.key === 'Delete' || e.key === 'Backspace') {
+        const selectedPlacedId = useCanvasStore.getState().selectedPlacedId;
+        if (selectedPlacedId) {
+          e.preventDefault();
+          deleteSelected();
+        }
       } else if (e.key === 'Escape') {
         useCanvasStore.getState().setSelectedItemKey(undefined);
         useCanvasStore.getState().setSelectedPlacedId(undefined);
@@ -100,13 +128,13 @@ export default function EditorPage() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [undo, redo, setTool, rotateSelected]);
+  }, [undo, redo, setTool, rotateSelected, deleteSelected]);
 
   const RIGHT_TABS: { id: RightPanelTab; label: string; icon: React.ReactNode }[] = [
-    { id: 'layers', label: '图层', icon: <Layers size={16} /> },
-    { id: 'ai', label: 'AI', icon: <Sparkles size={16} /> },
-    { id: 'preview3d', label: '3D', icon: <Box size={16} /> },
-    { id: 'shopping', label: '清单', icon: <ListChecks size={16} /> },
+    { id: 'layers', label: t('editor.panelTabs.layers'), icon: <Layers size={16} /> },
+    { id: 'ai', label: t('editor.panelTabs.ai'), icon: <Sparkles size={16} /> },
+    { id: 'preview3d', label: t('editor.panelTabs.preview3d'), icon: <Box size={16} /> },
+    { id: 'shopping', label: t('editor.panelTabs.shopping'), icon: <ListChecks size={16} /> },
   ];
 
   return (
@@ -127,7 +155,7 @@ export default function EditorPage() {
           onClick={toggleLeft}
           className="absolute z-30 top-1/2 -translate-y-1/2 panel w-6 h-12 grid place-items-center text-leaf-600 hover:text-leaf-800 max-md:hidden"
           style={{ left: leftOpen ? '17rem' : '0.75rem' }}
-          title={leftOpen ? '收起物品库' : '展开物品库'}
+          title={leftOpen ? t('editor.collapseLeft') : t('editor.expandLeft')}
         >
           {leftOpen ? <PanelLeftClose size={14} /> : <PanelLeftOpen size={14} />}
         </button>
@@ -141,7 +169,7 @@ export default function EditorPage() {
           onClick={toggleRight}
           className="absolute z-30 top-1/2 -translate-y-1/2 panel w-6 h-12 grid place-items-center text-leaf-600 hover:text-leaf-800 max-md:hidden"
           style={{ right: rightOpen ? '21rem' : '0.75rem' }}
-          title={rightOpen ? '收起右侧面板' : '展开右侧面板'}
+          title={rightOpen ? t('editor.collapseRight') : t('editor.expandRight')}
         >
           {rightOpen ? <PanelRightClose size={14} /> : <PanelRightOpen size={14} />}
         </button>
@@ -152,21 +180,28 @@ export default function EditorPage() {
             className="panel w-80 shrink-0 flex flex-col overflow-hidden
               max-md:absolute max-md:inset-y-3 max-md:right-3 max-md:z-20 max-md:w-[85vw] max-md:max-w-sm"
           >
-            <div className="flex border-b border-leaf-100 bg-leaf-50/60">
-              {RIGHT_TABS.map((t) => (
-                <button
-                  key={t.id}
-                  onClick={() => setRightTab(t.id)}
-                  className={`flex-1 flex flex-col items-center justify-center gap-0.5 py-2 text-xs font-semibold transition ${
-                    rightTab === t.id
-                      ? 'bg-white text-leaf-800 border-b-2 border-leaf-500'
-                      : 'text-leaf-600 hover:bg-white/60'
-                  }`}
-                >
-                  {t.icon}
-                  {t.label}
-                </button>
-              ))}
+            <div className="flex gap-1 p-2 border-b-2 border-cream-200 bg-cream-50">
+              {RIGHT_TABS.map((tab) => {
+                const active = rightTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setRightTab(tab.id)}
+                    className={`relative flex-1 flex flex-col items-center justify-center gap-0.5 py-2 rounded-full text-xs font-semibold transition ${
+                      active
+                        ? 'text-mint-600 bg-mint-500/15'
+                        : 'text-leaf-600 hover:bg-mint-500/10 hover:text-leaf-700'
+                    }`}
+                    style={active ? { boxShadow: '0 3px 0 0 #d4c9b4', fontWeight: 700 } : undefined}
+                  >
+                    {tab.icon}
+                    <span>{tab.label}</span>
+                    {active && (
+                      <span className="absolute -top-1 -right-1 leaf-wiggle text-[10px]">🌿</span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
             <div className="flex-1 overflow-hidden min-h-0">
               {rightTab === 'layers' && <LayerPanel />}
@@ -181,19 +216,38 @@ export default function EditorPage() {
           </aside>
         )}
 
+        {/* Toast: shown right after applying a recognition result */}
+        {recognizeToast && (
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-40 panel px-4 py-2.5 flex items-center gap-3 max-w-md animate-fadeUp" style={{ boxShadow: '0 4px 0 0 #e0b800' }}>
+            <Sparkles size={16} className="text-mint-500 shrink-0" />
+            <span className="text-xs text-leaf-800 font-semibold leading-relaxed">
+              {t('recognize.skippedToast', { placed: recognizeToast.placed, skipped: recognizeToast.skipped })}
+            </span>
+            <button
+              onClick={() => setRecognizeToast(null)}
+              className="text-leaf-500 hover:text-mint-600 shrink-0"
+              title={t('recognize.skippedToastDismiss')}
+            >
+              <CloseIcon size={14} />
+            </button>
+          </div>
+        )}
+
         {/* Mobile floating panel toggles */}
         <div className="md:hidden absolute bottom-4 left-1/2 -translate-x-1/2 z-30 panel flex p-1 gap-1">
           <button
             onClick={toggleLeft}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${leftOpen ? 'bg-leaf-500 text-white' : 'text-leaf-700'}`}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold transition ${leftOpen ? 'bg-mint-500 text-white' : 'text-leaf-700'}`}
+            style={leftOpen ? { boxShadow: '0 2px 0 0 #11a89b' } : undefined}
           >
-            物品
+            {t('editor.panelToggle.items')}
           </button>
           <button
             onClick={toggleRight}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${rightOpen ? 'bg-leaf-500 text-white' : 'text-leaf-700'}`}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold transition ${rightOpen ? 'bg-mint-500 text-white' : 'text-leaf-700'}`}
+            style={rightOpen ? { boxShadow: '0 2px 0 0 #11a89b' } : undefined}
           >
-            面板
+            {t('editor.panelToggle.panels')}
           </button>
         </div>
       </div>

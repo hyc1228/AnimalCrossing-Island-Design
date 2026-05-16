@@ -13,6 +13,9 @@ dist-ssr
 *.local
 *.tsbuildinfo
 
+# Local research vendoring (HID source, etc.) — not redistributed
+.research/
+
 # Editor
 .vscode/*
 !.vscode/extensions.json

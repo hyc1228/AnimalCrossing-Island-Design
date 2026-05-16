@@ -1,14 +1,29 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { LayoutGrid, Plus, Sparkles, TreePine, Trash2, ChevronRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { LayoutGrid, Plus, Trash2, ChevronRight, Camera, BookHeart, FileImage } from 'lucide-react';
+import {
+  Button as AIButton,
+  Card as AICard,
+  Footer as AIFooter,
+  Icon as AIIcon,
+  Time as AITime,
+  Divider as AIDivider,
+  Modal as AIModal,
+} from 'animal-island-ui';
 import { createDesign } from '../utils/grid';
 import { deleteDesign, getCurrentDesignId, loadAllDesigns, saveDesign, setCurrentDesignId } from '../utils/storage';
+import { useInspirationsStore } from '../stores/inspirationsStore';
 import type { IslandDesign } from '../types';
+import LanguageSwitcher from '../components/LanguageSwitcher/LanguageSwitcher';
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
   const [designs, setDesigns] = useState<IslandDesign[]>([]);
   const [currentId, setCurId] = useState<string | undefined>(undefined);
+  const [pendingDelete, setPendingDelete] = useState<IslandDesign | null>(null);
+  const inspirationCount = useInspirationsStore((s) => s.items.length);
 
   useEffect(() => {
     setDesigns(loadAllDesigns());
@@ -16,7 +31,7 @@ export default function HomePage() {
   }, []);
 
   const handleNewDesign = () => {
-    const d = createDesign('我的小岛 ' + (designs.length + 1));
+    const d = createDesign(t('home.newIslandName', { index: designs.length + 1 }));
     saveDesign(d);
     setCurrentDesignId(d.id);
     navigate(`/editor/${d.id}`);
@@ -32,162 +47,266 @@ export default function HomePage() {
     }
   };
 
-  const handleDelete = (id: string) => {
-    if (!confirm('确定删除这个岛屿设计？此操作不可恢复。')) return;
-    deleteDesign(id);
+  const confirmDelete = () => {
+    if (!pendingDelete) return;
+    deleteDesign(pendingDelete.id);
     setDesigns(loadAllDesigns());
+    setPendingDelete(null);
   };
 
+  const locale = i18n.resolvedLanguage === 'ja' ? 'ja-JP' : i18n.resolvedLanguage === 'en' ? 'en-US' : 'zh-CN';
+
   return (
-    <div className="min-h-screen w-full flex flex-col">
-      <header className="px-6 lg:px-12 py-6 flex items-center justify-between">
+    <div className="min-h-screen w-full flex flex-col relative">
+      <header className="px-6 lg:px-12 py-6 flex items-center justify-between flex-wrap gap-3 relative z-10">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-leaf-500 grid place-items-center text-white shadow-soft">
-            <TreePine size={22} />
-          </div>
+          <span className="grid place-items-center w-12 h-12 rounded-2xl bg-mint-500" style={{ boxShadow: '0 4px 0 0 #11a89b' }}>
+            <AIIcon name="icon-helicopter" size={28} style={{ filter: 'brightness(0) invert(1)' }} />
+          </span>
           <div>
-            <h1 className="text-xl font-extrabold text-leaf-800">岛屿规划师</h1>
-            <p className="text-xs text-leaf-600 -mt-0.5">Animal Crossing Island Planner</p>
+            <h1 className="text-xl font-extrabold text-leaf-800">{t('app.name')}</h1>
+            <p className="text-xs text-leaf-600 -mt-0.5">{t('app.tagline')}</p>
           </div>
         </div>
         <nav className="flex items-center gap-2">
-          <Link to="/gallery" className="btn-ghost">
-            <LayoutGrid size={16} /> 模板库
+          <Link to="/inspirations" className="btn-ghost relative">
+            <BookHeart size={16} /> {t('inspirations.title')}
+            {inspirationCount > 0 && (
+              <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-extrabold bg-mint-500 text-white">
+                {inspirationCount}
+              </span>
+            )}
           </Link>
+          <Link to="/gallery" className="btn-ghost">
+            <LayoutGrid size={16} /> {t('gallery.title')}
+          </Link>
+          <LanguageSwitcher />
         </nav>
       </header>
 
-      <main className="flex-1 px-6 lg:px-12 pb-12">
-        <section className="max-w-6xl mx-auto mt-8 lg:mt-16">
-          <div className="text-center max-w-2xl mx-auto">
-            <span className="chip bg-leaf-100 text-leaf-700 mb-4">
-              <Sparkles size={12} /> 让岛建变得轻松又有趣
-            </span>
-            <h2 className="text-3xl lg:text-5xl font-extrabold text-leaf-900 leading-tight">
-              先规划，再落地，
+      <main className="flex-1 px-6 lg:px-12 pb-32 relative z-10">
+        <section className="max-w-6xl mx-auto mt-6 lg:mt-10">
+          {/* Hero: title card + clock */}
+          <div className="flex flex-col items-center text-center">
+            <AICard type="title" className="!px-8 !py-3 mb-5">
+              <span className="text-base font-bold text-leaf-800">{t('home.tag')}</span>
+            </AICard>
+            <h2 className="text-3xl lg:text-5xl font-extrabold text-leaf-800 leading-tight max-w-2xl">
+              {t('home.heroLine1')}
               <br />
-              再也不用反复 <span className="text-leaf-500">拆建</span>
+              {t('home.heroLine2')} <span className="text-mint-600">{t('home.heroAccent')}</span>
             </h2>
-            <p className="mt-4 text-leaf-700/80 text-lg">
-              俯视网格自由布局 · 5 套精选风格模板 · AI 智能配置建议 · 3D 预览与家具清单
-            </p>
+            <p className="mt-4 text-leaf-700/80 text-lg max-w-2xl">{t('home.subtitle')}</p>
 
-            <div className="mt-8 flex flex-wrap gap-3 justify-center">
-              <button onClick={handleNewDesign} className="btn-primary text-base">
-                <Plus size={18} /> 新建岛屿
+            <div className="mt-8">
+              <AITime />
+            </div>
+
+            <div className="mt-8 flex flex-wrap gap-4 justify-center">
+              <AIButton type="primary" size="large" onClick={() => navigate('/recognize')} icon={<Camera size={18} />}>
+                {t('home.recognizeImage')}
+              </AIButton>
+              <AIButton size="large" onClick={handleNewDesign} icon={<Plus size={18} />}>
+                {t('home.newIsland')}
+              </AIButton>
+              <AIButton size="large" onClick={handleContinue} disabled={designs.length === 0}>
+                {t('home.continueLast')} <ChevronRight size={18} />
+              </AIButton>
+              <AIButton size="large" type="dashed" onClick={() => navigate('/gallery')} icon={<LayoutGrid size={18} />}>
+                {t('home.browseTemplates')}
+              </AIButton>
+            </div>
+
+            <div className="mt-5 flex items-center justify-center gap-2 flex-wrap">
+              {inspirationCount > 0 && (
+                <button
+                  onClick={() => navigate('/inspirations')}
+                  className="chip chip-mint hover:-translate-y-0.5 transition-transform inline-flex items-center gap-1.5"
+                >
+                  <BookHeart size={14} />
+                  {t('home.inspirationsChip', { count: inspirationCount })}
+                  <ChevronRight size={14} />
+                </button>
+              )}
+              <button
+                onClick={() => navigate('/import-hid')}
+                className="chip hover:-translate-y-0.5 transition-transform inline-flex items-center gap-1.5"
+              >
+                <FileImage size={14} />
+                {t('home.importHidChip')}
+                <ChevronRight size={14} />
               </button>
-              <button onClick={handleContinue} className="btn-secondary text-base" disabled={designs.length === 0}>
-                继续上次设计 <ChevronRight size={18} />
-              </button>
-              <Link to="/gallery" className="btn-secondary text-base">
-                <LayoutGrid size={18} /> 浏览模板
-              </Link>
             </div>
           </div>
 
-          {/* Feature highlights */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-16">
+          <AIDivider type="wave-yellow" style={{ marginTop: 48, marginBottom: 32 }} />
+
+          {/* Features: colorful AI Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <FeatureCard
-              icon="🎨"
-              title="网格化画布"
-              desc="80×70 俯视网格，四图层独立编辑，画地形、铺道路、摆家具一气呵成。"
+              iconName="icon-camera"
+              color="app-pink"
+              title={t('home.features.recognize.title')}
+              desc={t('home.features.recognize.desc')}
+              onClick={() => navigate('/recognize')}
+              badge={t('home.features.recognize.badge')}
             />
             <FeatureCard
-              icon="✨"
-              title="AI 智能建议"
-              desc="选个风格，AI 帮你在整岛或选中区域自动生成布局，喜欢就保留。"
+              iconName="icon-design"
+              color="app-teal"
+              title={t('home.features.canvas.title')}
+              desc={t('home.features.canvas.desc')}
             />
             <FeatureCard
-              icon="🧱"
-              title="3D 积木预览"
-              desc="一键查看立体效果，提前感受岛屿空间感，导出家具清单照着采购。"
+              iconName="icon-miles"
+              color="app-yellow"
+              title={t('home.features.ai.title')}
+              desc={t('home.features.ai.desc')}
+            />
+            <FeatureCard
+              iconName="icon-map"
+              color="app-blue"
+              title={t('home.features.preview.title')}
+              desc={t('home.features.preview.desc')}
             />
           </div>
 
-          {/* My designs */}
           {designs.length > 0 && (
-            <div className="mt-12">
-              <div className="flex items-baseline justify-between mb-4">
-                <h3 className="text-xl font-bold text-leaf-800">我的岛屿设计</h3>
-                <span className="text-sm text-leaf-600">{designs.length} 个</span>
+            <>
+              <AIDivider type="line-teal" style={{ marginTop: 56, marginBottom: 24 }} />
+              <div>
+                <div className="flex items-baseline justify-between mb-4">
+                  <h3 className="text-xl font-bold text-leaf-800 flex items-center gap-2">
+                    <AIIcon name="icon-critterpedia" size={28} bounce /> {t('home.myDesigns')}
+                  </h3>
+                  <span className="text-sm text-leaf-600 font-semibold">
+                    {t('home.designCount', { count: designs.length })}
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {designs.map((d) => (
+                    <DesignCard
+                      key={d.id}
+                      design={d}
+                      locale={locale}
+                      onOpen={() => {
+                        setCurrentDesignId(d.id);
+                        navigate(`/editor/${d.id}`);
+                      }}
+                      onDelete={() => setPendingDelete(d)}
+                    />
+                  ))}
+                </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {designs.map((d) => (
-                  <DesignCard
-                    key={d.id}
-                    design={d}
-                    onOpen={() => {
-                      setCurrentDesignId(d.id);
-                      navigate(`/editor/${d.id}`);
-                    }}
-                    onDelete={() => handleDelete(d.id)}
-                  />
-                ))}
-              </div>
-            </div>
+            </>
           )}
         </section>
       </main>
 
-      <footer className="text-center text-xs text-leaf-600/70 py-6">
-        本工具与任天堂无关 · 仅为玩家社区辅助 · Made with love for Animal Crossing fans
-      </footer>
+      {/* Decorative tree silhouette at the bottom */}
+      <div className="fixed inset-x-0 bottom-0 pointer-events-none z-0">
+        <AIFooter type="tree" />
+      </div>
+
+      <div className="relative z-10 text-center text-xs text-leaf-600/80 pb-3 font-semibold">
+        {t('home.footer')}
+      </div>
+
+      <AIModal
+        open={pendingDelete !== null}
+        title={t('common.delete')}
+        typewriter={false}
+        onClose={() => setPendingDelete(null)}
+        onOk={confirmDelete}
+      >
+        {t('home.deleteConfirm')}
+        {pendingDelete && (
+          <div className="mt-2 font-bold text-leaf-800">「{pendingDelete.name}」</div>
+        )}
+      </AIModal>
     </div>
   );
 }
 
-function FeatureCard({ icon, title, desc }: { icon: string; title: string; desc: string }) {
+function FeatureCard({
+  iconName,
+  color,
+  title,
+  desc,
+  onClick,
+  badge,
+}: {
+  iconName: 'icon-design' | 'icon-miles' | 'icon-map' | 'icon-camera' | 'icon-diy';
+  color: 'app-teal' | 'app-yellow' | 'app-blue' | 'app-pink' | 'app-orange';
+  title: string;
+  desc: string;
+  onClick?: () => void;
+  badge?: string;
+}) {
+  const interactive = !!onClick;
   return (
-    <div className="card p-6">
-      <div className="text-3xl mb-3">{icon}</div>
-      <h4 className="font-bold text-leaf-800 mb-1">{title}</h4>
-      <p className="text-sm text-leaf-700/80 leading-relaxed">{desc}</p>
-    </div>
+    <AICard
+      color={color}
+      onClick={onClick}
+      className={`!p-6 flex flex-col gap-3 transition-transform relative ${interactive ? 'cursor-pointer hover:-translate-y-1' : 'hover:-translate-y-1'}`}
+    >
+      {badge && (
+        <span className="absolute top-3 right-3 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-white/90 text-leaf-800 tracking-wide">
+          {badge}
+        </span>
+      )}
+      <AIIcon name={iconName} size={56} bounce />
+      <h4 className="font-extrabold text-lg" style={{ color: 'inherit' }}>{title}</h4>
+      <p className="text-sm leading-relaxed opacity-90" style={{ color: 'inherit' }}>{desc}</p>
+    </AICard>
   );
 }
 
 function DesignCard({
   design,
+  locale,
   onOpen,
   onDelete,
 }: {
   design: IslandDesign;
+  locale: string;
   onOpen: () => void;
   onDelete: () => void;
 }) {
+  const { t } = useTranslation();
   const itemCount = design.items.length;
-  const updated = new Date(design.updatedAt).toLocaleString('zh-CN', {
+  const updated = new Date(design.updatedAt).toLocaleString(locale, {
     month: '2-digit',
     day: '2-digit',
     hour: '2-digit',
     minute: '2-digit',
   });
   return (
-    <div className="card p-4 flex flex-col gap-3 hover:shadow-soft transition-shadow group">
+    <AICard className="!p-4 flex flex-col gap-3 hover:-translate-y-1 transition-transform group">
       <button
         onClick={onOpen}
-        className="aspect-video rounded-xl bg-gradient-to-br from-leaf-100 to-sky-100 grid place-items-center text-5xl"
+        className="aspect-video rounded-2xl bg-gradient-to-br from-mint-100 via-cream-100 to-sun-500/20 grid place-items-center text-5xl border-2 border-cream-200"
       >
         🏝️
       </button>
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <h4 className="font-bold text-leaf-800 truncate">{design.name}</h4>
-          <p className="text-xs text-leaf-600/80 mt-0.5">
-            {itemCount} 个物品 · {updated}
+          <p className="text-xs text-leaf-600 mt-0.5">
+            {t('home.designMeta', { count: itemCount, updated })}
           </p>
         </div>
         <button
           onClick={onDelete}
-          className="opacity-0 group-hover:opacity-100 text-leaf-600/60 hover:text-red-500 p-1 transition"
-          title="删除"
+          className="opacity-0 group-hover:opacity-100 text-leaf-500 hover:text-red-500 p-1 transition"
+          title={t('common.delete')}
         >
           <Trash2 size={16} />
         </button>
       </div>
-      <button onClick={onOpen} className="btn-secondary text-sm">
-        打开编辑 <ChevronRight size={16} />
-      </button>
-    </div>
+      <AIButton type="primary" size="small" onClick={onOpen} block>
+        {t('home.openEdit')} <ChevronRight size={14} />
+      </AIButton>
+    </AICard>
   );
 }

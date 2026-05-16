@@ -9,44 +9,191 @@
     @apply h-full w-full;
   }
   body {
-    @apply font-ac text-leaf-900 antialiased;
+    @apply font-ac text-leaf-700 antialiased;
+    /* Warm cream / sand background, very soft */
     background:
-      radial-gradient(circle at 10% 10%, #e3f3da 0%, transparent 40%),
-      radial-gradient(circle at 90% 20%, #f0f8ff 0%, transparent 40%),
-      linear-gradient(180deg, #f7fbf4 0%, #eef7ea 100%);
+      radial-gradient(circle at 8% 12%, rgba(255, 220, 168, 0.30) 0%, transparent 38%),
+      radial-gradient(circle at 92% 8%, rgba(193, 240, 234, 0.38) 0%, transparent 42%),
+      radial-gradient(circle at 50% 95%, rgba(255, 220, 168, 0.20) 0%, transparent 45%),
+      linear-gradient(180deg, #fbf6e8 0%, #f6efd6 100%);
     min-height: 100vh;
+    letter-spacing: 0.01em;
+  }
+  h1, h2, h3, h4 {
+    @apply text-leaf-800;
+    letter-spacing: 0.02em;
+  }
+  input, button, select, textarea {
+    font-family: inherit;
   }
 }
 
 @layer components {
+  /* ------- Game-button style: bottom-only solid shadow, press-down on active ------- */
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 font-semibold transition-all active:scale-95 select-none;
+    @apply inline-flex items-center justify-center gap-2 font-bold rounded-full px-5 py-2 transition-all duration-150 select-none;
+    letter-spacing: 0.02em;
+    line-height: 1;
   }
+  /* Primary = cream w/ brown text + brown 3D shadow (AC standard primary button) */
   .btn-primary {
-    @apply btn bg-leaf-500 text-white shadow-soft hover:bg-leaf-600;
+    @apply btn bg-cream-100 text-leaf-800 border-2 border-cream-100;
+    box-shadow: 0 5px 0 0 #bdaea0;
   }
+  .btn-primary:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 0 0 #bdaea0;
+  }
+  .btn-primary:active:not(:disabled) {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 0 #bdaea0;
+  }
+  .btn-primary:focus-visible {
+    outline: 2px solid #ffcc00;
+    outline-offset: 2px;
+  }
+  /* Mint accent button (for highlighted CTA like "Generate", "Apply template") */
+  .btn-mint {
+    @apply btn bg-mint-500 text-white border-2 border-mint-500;
+    box-shadow: 0 5px 0 0 #11a89b;
+  }
+  .btn-mint:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 0 0 #11a89b;
+    background: #3dd4c6;
+  }
+  .btn-mint:active:not(:disabled) {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 0 #11a89b;
+  }
+  /* Sun (warm yellow): used for highlight / confirm in modal */
+  .btn-sun {
+    @apply btn bg-sun-500 text-leaf-800 border-2 border-sun-500;
+    box-shadow: 0 5px 0 0 #e0b800;
+  }
+  .btn-sun:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 0 0 #e0b800;
+  }
+  .btn-sun:active:not(:disabled) {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 0 #e0b800;
+  }
+  /* Secondary = lighter, used for "Continue" / second-tier */
   .btn-secondary {
-    @apply btn bg-white text-leaf-700 shadow-soft hover:bg-leaf-50 border border-leaf-100;
+    @apply btn bg-white text-leaf-700 border-2 border-cream-200;
+    box-shadow: 0 3px 0 0 #d4c9b4;
   }
+  .btn-secondary:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 0 0 #d4c9b4;
+    background: #fdfbf3;
+  }
+  .btn-secondary:active:not(:disabled) {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 0 #d4c9b4;
+  }
+  /* Ghost: flat, just a hover wash */
   .btn-ghost {
-    @apply btn text-leaf-700 hover:bg-leaf-50;
+    @apply inline-flex items-center justify-center gap-2 font-semibold rounded-full px-4 py-2 text-leaf-700 transition-all duration-150 select-none;
+    letter-spacing: 0.02em;
   }
+  .btn-ghost:hover:not(:disabled) {
+    background: rgba(25, 200, 185, 0.12);
+    color: #11a89b;
+  }
+  .btn-ghost:disabled {
+    @apply opacity-30 cursor-not-allowed;
+  }
+  .btn:disabled,
+  .btn-primary:disabled,
+  .btn-mint:disabled,
+  .btn-sun:disabled,
+  .btn-secondary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+
+  /* ------- Card: warm cream container with soft brown shadow ------- */
   .card {
-    @apply bg-white rounded-2xl shadow-panel border border-leaf-100/60;
+    @apply bg-cream-50 rounded-3xl border-2 border-cream-200 transition-shadow;
+    box-shadow: 0 4px 10px rgba(107, 92, 67, 0.18);
   }
+  .card-title {
+    /* Organic asymmetric radius like AC title bubbles */
+    background: #fdfdf5;
+    border-radius: 40px 35px 45px 38px / 38px 45px 35px 40px;
+  }
+
+  /* ------- Panel: similar but tighter, used for floating UI ------- */
   .panel {
-    @apply bg-white/90 backdrop-blur-sm rounded-2xl shadow-panel border border-leaf-100/60;
+    @apply bg-cream-50/95 backdrop-blur-sm rounded-2xl border-2 border-cream-200;
+    box-shadow: 0 4px 14px 0 rgba(61, 52, 40, 0.12);
   }
+
+  /* ------- Chip: small pill tag ------- */
   .chip {
-    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold;
+    @apply inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold;
+    letter-spacing: 0.02em;
+  }
+  .chip-mint {
+    @apply chip bg-mint-50 text-mint-600 border border-mint-100;
+  }
+  .chip-sun {
+    @apply chip bg-sun-500/15 text-sand-700 border border-sun-500/30;
+  }
+
+  /* ------- Input: pill-shaped, bottom 3D shadow, yellow focus ------- */
+  .input {
+    @apply w-full rounded-full px-4 py-2 font-medium text-leaf-700 transition-all duration-150;
+    background: rgb(247, 243, 223);
+    border: 2.5px solid #c4b89e;
+    box-shadow: 0 3px 0 0 #d4c9b4;
+    letter-spacing: 0.01em;
+  }
+  .input::placeholder {
+    color: #c4b89e;
+    font-weight: 400;
+  }
+  .input:hover {
+    border-color: #a89878;
+    box-shadow: 0 3px 0 0 #c4b89e;
+  }
+  .input:focus {
+    outline: none;
+    border-color: #ffcc00;
+    box-shadow: 0 3px 0 0 #e0b800, 0 0 0 3px rgba(255, 204, 0, 0.18);
+  }
+
+  /* ------- AC-style pill tab (used in editor right panel) ------- */
+  .ac-tab {
+    @apply inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-leaf-600 transition-all;
+  }
+  .ac-tab:hover:not(.ac-tab-active) {
+    background: rgba(25, 200, 185, 0.10);
+    color: #725d42;
+  }
+  .ac-tab-active {
+    background: rgba(25, 200, 185, 0.18);
+    color: #11a89b;
+    font-weight: 700;
+    box-shadow: 0 3px 0 0 #d4c9b4;
   }
 }
 
-/* Hide scrollbar for canvas containers but allow scroll */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  /* AC-style leaf wiggle (used on active tab leaf decoration) */
+  .leaf-wiggle {
+    display: inline-block;
+    animation: leafWiggle 2s ease-in-out infinite;
+    transform-origin: bottom center;
+  }
 }
