@@ -295,9 +295,18 @@ function DesignCard({
     <AICard className="!p-4 flex flex-col gap-3 hover:-translate-y-1 transition-transform group">
       <button
         onClick={onOpen}
-        className="aspect-video rounded-2xl bg-gradient-to-br from-mint-100 via-cream-100 to-sun-500/20 grid place-items-center text-5xl border-2 border-cream-200"
+        className="aspect-video rounded-2xl bg-gradient-to-br from-mint-100 via-cream-100 to-sun-500/20 grid place-items-center text-5xl border-2 border-cream-200 overflow-hidden p-0"
       >
-        🏝️
+        {design.thumbnail ? (
+          <img
+            src={design.thumbnail}
+            alt={design.name}
+            loading="lazy"
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <span>🏝️</span>
+        )}
       </button>
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">

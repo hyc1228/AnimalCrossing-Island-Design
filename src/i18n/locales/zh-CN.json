@@ -12,7 +12,8 @@
     "save": "保存",
     "export": "导出",
     "back": "返回",
-    "home": "首页"
+    "home": "首页",
+    "copy": "复制"
   },
   "language": {
     "label": "语言",
@@ -87,9 +88,16 @@
     "exportPng": "导出 PNG",
     "exportPngOk": "PNG 已下载",
     "exportPngFailed": "导出失败，请稍后重试",
+    "copyPng": "复制 PNG 到剪贴板",
+    "copyPngOk": "PNG 已复制到剪贴板",
+    "copyPngFailed": "复制失败，浏览器可能不支持",
     "shareUrl": "复制分享链接",
+    "shareTitle": "分享当前岛屿",
+    "shareDesc": "扫码或复制链接即可在任意浏览器打开同一个岛屿。整个设计被压缩进 URL，无需服务器。",
     "shareUrlCopied": "分享链接已复制",
-    "shareUrlManual": "无法自动复制，请手动选择并复制下面的链接："
+    "shareUrlManual": "无法自动复制，请手动选择并复制下面的链接：",
+    "shareUrlSize": "链接长度约 {{kb}} KB",
+    "shareQrTooLong": "数据太多，二维码生成失败。请直接复制链接。"
   },
   "toolbar": {
     "select": "选择 (V)",
@@ -425,6 +433,7 @@
     "partialImportTitle": "支持部分导入",
     "partialImportDesc": "HID 与本工具的家具词表只有部分对得上：建筑 / 桥梁 / 坡道 / 树木 / 花卉可以导入，地形和小件装饰暂时不支持。导入后画布会显示一份起点，可继续手动编辑。",
     "mappingSummary": "可映射 {{mapped}} 件 · 跳过 {{unmapped}} 件",
+    "terrainSummary": "地形可还原 {{painted}} 个非草地格",
     "mappingHint": "跳过的多为本地物品库尚未收录的类型，依然可下载 JSON 备份。",
     "topUnmapped": "高频跳过项",
     "importToCanvas": "导入到新岛屿",

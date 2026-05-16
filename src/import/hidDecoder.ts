@@ -38,6 +38,12 @@ export interface HidDecodedMap {
   totalObjects: number;
   /** Distinct drawing layers (terrain/path colours) present. */
   drawingLayers: string[];
+  /**
+   * Raw `drawing` payload — color name → polygon vertices (`number[]` for a
+   * single closed path, `number[][]` for compound paths). Kept verbatim so
+   * downstream consumers can rasterise the shapes into their own grid.
+   */
+  rawDrawing: Record<string, unknown>;
   /** Optional V2 edge tile asset indices. */
   edgeTiles?: HidEdgeTiles;
   /** Raw JSON payload (post-decompression), for advanced users / debugging. */
@@ -136,6 +142,7 @@ function summarise(raw: Record<string, unknown>, rawJson: string): HidDecodedMap
     objectGroups,
     totalObjects,
     drawingLayers,
+    rawDrawing: drawingRaw,
     edgeTiles,
     rawJson,
     rawObjects,

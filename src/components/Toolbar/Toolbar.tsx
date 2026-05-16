@@ -13,10 +13,14 @@ import {
   Grid3x3,
   Image as ImageIcon,
   Share2,
+  Clipboard,
+  Copy,
+  X,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import QRCode from 'qrcode';
 import { useCanvasStore } from '../../stores/canvasStore';
 import { useUIStore } from '../../stores/uiStore';
 import { TERRAIN } from '../../types';
@@ -61,12 +65,18 @@ export default function Toolbar() {
   const design = useCanvasStore((s) => s.design);
 
   const [toast, setToast] = useState<string | null>(null);
+  const [shareOpen, setShareOpen] = useState(false);
 
   const isTerrainTool = tool === 'terrain-brush' || tool === 'terrain-rect';
 
-  const handleExportPng = () => {
+  const pushToast = (msg: string, ms = 2500) => {
+    setToast(msg);
+    window.setTimeout(() => setToast((cur) => (cur === msg ? null : cur)), ms);
+  };
+
+  const getDesignPngDataUrl = (): string | null => {
     const CELL_PX = 18;
-    const url = exportCanvasPng({
+    return exportCanvasPng({
       fitToDesign: true,
       designPx: {
         width: design.size.cols * CELL_PX,
@@ -74,29 +84,44 @@ export default function Toolbar() {
       },
       pixelRatio: 2,
     });
+  };
+
+  const handleExportPng = () => {
+    const url = getDesignPngDataUrl();
     if (!url) {
-      setToast(t('editor.exportPngFailed'));
-      window.setTimeout(() => setToast(null), 3000);
+      pushToast(t('editor.exportPngFailed'), 3000);
       return;
     }
     const safeName = design.name.replace(/[^\w\u4e00-\u9fa5-]/g, '_').slice(0, 40);
     downloadDataUrl(`ACNH-${safeName}-${Date.now()}.png`, url);
-    setToast(t('editor.exportPngOk'));
-    window.setTimeout(() => setToast(null), 2500);
+    pushToast(t('editor.exportPngOk'));
   };
 
-  const handleShareUrl = async () => {
-    const url = buildShareUrl(design);
-    try {
-      await navigator.clipboard.writeText(url);
-      setToast(t('editor.shareUrlCopied'));
-    } catch {
-      // Fallback: open prompt so the user can still copy manually
-      window.prompt(t('editor.shareUrlManual'), url);
-      setToast(t('editor.shareUrlCopied'));
+  const handleCopyPng = async () => {
+    const url = getDesignPngDataUrl();
+    if (!url) {
+      pushToast(t('editor.exportPngFailed'), 3000);
+      return;
     }
-    window.setTimeout(() => setToast(null), 2500);
+    // Convert the data URL to a Blob and write it as image/png to the clipboard.
+    try {
+      const resp = await fetch(url);
+      const blob = await resp.blob();
+      // ClipboardItem isn't typed everywhere; cast through unknown.
+      const ClipboardItemCtor =
+        (window as unknown as { ClipboardItem?: typeof ClipboardItem }).ClipboardItem;
+      if (!ClipboardItemCtor || !navigator.clipboard?.write) {
+        throw new Error('Clipboard API unavailable');
+      }
+      const item = new ClipboardItemCtor({ 'image/png': blob });
+      await navigator.clipboard.write([item]);
+      pushToast(t('editor.copyPngOk'));
+    } catch {
+      pushToast(t('editor.copyPngFailed'), 3000);
+    }
   };
+
+  const handleShareUrl = () => setShareOpen(true);
 
   return (
     <div className="panel mx-3 mt-3 p-2 flex items-center gap-2 flex-wrap">
@@ -155,6 +180,9 @@ export default function Toolbar() {
 
       <ToolBtn onClick={handleExportPng} title={t('editor.exportPng')}>
         <ImageIcon size={16} />
+      </ToolBtn>
+      <ToolBtn onClick={handleCopyPng} title={t('editor.copyPng')}>
+        <Clipboard size={16} />
       </ToolBtn>
       <ToolBtn onClick={handleShareUrl} title={t('editor.shareUrl')}>
         <Share2 size={16} />
@@ -220,6 +248,110 @@ export default function Toolbar() {
           <span className="chip chip-mint text-xs px-3 py-1 animate-[fadeUp_0.25s_ease-out]">{toast}</span>
         </div>
       )}
+
+      {shareOpen && (
+        <ShareModal
+          design={design}
+          onClose={() => setShareOpen(false)}
+          onCopied={() => pushToast(t('editor.shareUrlCopied'))}
+        />
+      )}
+    </div>
+  );
+}
+
+function ShareModal({
+  design,
+  onClose,
+  onCopied,
+}: {
+  design: ReturnType<typeof useCanvasStore.getState>['design'];
+  onClose: () => void;
+  onCopied: () => void;
+}) {
+  const { t } = useTranslation();
+  const [url, setUrl] = useState('');
+  const [qrSrc, setQrSrc] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const shareUrl = buildShareUrl(design);
+    setUrl(shareUrl);
+    // Render a 240px QR code as a data URL. QRCode.toDataURL is async and may
+    // refuse very long payloads; we surface a friendlier message in that case.
+    QRCode.toDataURL(shareUrl, {
+      width: 240,
+      margin: 1,
+      color: { dark: '#1f3a1f', light: '#fff8e8' },
+      errorCorrectionLevel: 'L',
+    })
+      .then(setQrSrc)
+      .catch(() => setQrSrc(null));
+  }, [design]);
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch {
+      inputRef.current?.select();
+      try {
+        document.execCommand?.('copy');
+      } catch {
+        /* ignore */
+      }
+    }
+    onCopied();
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 grid place-items-center bg-black/50 p-4 animate-[fadeUp_0.18s_ease-out]"
+      onClick={onClose}
+    >
+      <div
+        className="panel max-w-md w-full p-5 relative"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-3 w-8 h-8 grid place-items-center rounded-full text-leaf-600 hover:bg-cream-100"
+          title={t('common.close', { defaultValue: 'Close' })}
+        >
+          <X size={16} />
+        </button>
+        <h3 className="font-extrabold text-leaf-800 text-base mb-1">{t('editor.shareTitle')}</h3>
+        <p className="text-xs text-leaf-600 leading-relaxed mb-4">{t('editor.shareDesc')}</p>
+
+        <div className="rounded-2xl bg-cream-50 border-2 border-cream-200 p-3 grid place-items-center mb-3">
+          {qrSrc ? (
+            <img src={qrSrc} alt="share QR" className="w-60 h-60" />
+          ) : (
+            <div className="w-60 h-60 grid place-items-center text-xs text-leaf-500 text-center px-4">
+              {t('editor.shareQrTooLong')}
+            </div>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2">
+          <input
+            ref={inputRef}
+            value={url}
+            readOnly
+            onFocus={(e) => e.target.select()}
+            className="input flex-1 text-xs py-1.5 font-mono"
+          />
+          <button
+            onClick={copy}
+            className="btn-primary text-xs px-3 py-1.5 inline-flex items-center gap-1.5"
+          >
+            <Copy size={12} />
+            {t('common.copy', { defaultValue: 'Copy' })}
+          </button>
+        </div>
+        <p className="text-[11px] text-leaf-500 mt-2 leading-relaxed">
+          {t('editor.shareUrlSize', { kb: (url.length / 1024).toFixed(1) })}
+        </p>
+      </div>
     </div>
   );
 }

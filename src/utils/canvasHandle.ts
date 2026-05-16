@@ -64,3 +64,38 @@ export function downloadDataUrl(filename: string, dataUrl: string): void {
   a.download = filename;
   a.click();
 }
+
+/**
+ * Capture a small JPEG thumbnail of the current design bounds (~480px tall).
+ * Returns `null` if there is no active stage. Used by the auto-save flow so
+ * the gallery and recent-designs lists can show real previews instead of a
+ * placeholder emoji.
+ */
+export function exportCanvasThumbnail(designPx: { width: number; height: number }): string | null {
+  if (!currentStage) return null;
+  // Aim for the largest dimension to be ≈480 so we stay well under 30KB per
+  // design after JPEG encoding (localStorage has a hard 5MB-ish budget).
+  const longest = Math.max(designPx.width, designPx.height);
+  const pixelRatio = Math.min(1, 480 / longest);
+
+  const oldScaleX = currentStage.scaleX();
+  const oldScaleY = currentStage.scaleY();
+  const oldPos = currentStage.position();
+  currentStage.scale({ x: 1, y: 1 });
+  currentStage.position({ x: 0, y: 0 });
+  const dataUrl = currentStage.toDataURL({
+    x: 0,
+    y: 0,
+    width: designPx.width,
+    height: designPx.height,
+    pixelRatio,
+    mimeType: 'image/jpeg',
+    quality: 0.72,
+  });
+  currentStage.scale({ x: oldScaleX, y: oldScaleY });
+  currentStage.position(oldPos);
+  // Force the visible stage back to its prior transform immediately so the
+  // user sees no flash (toDataURL has already drawn at 1:1 above).
+  currentStage.batchDraw();
+  return dataUrl;
+}

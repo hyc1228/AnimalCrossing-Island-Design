@@ -12,6 +12,7 @@ import {
 import LanguageSwitcher from '../components/LanguageSwitcher/LanguageSwitcher';
 import { decodeHidPng, HidDecodeError, type HidDecodedMap } from '../import/hidDecoder';
 import { mapHidObjects } from '../import/hidCatalog';
+import { decodeHidTerrain } from '../import/hidTerrain';
 import { ITEMS_BY_KEY } from '../data/items';
 import { canPlace, createDesign, generateId } from '../utils/grid';
 import { saveDesign, setCurrentDesignId } from '../utils/storage';
@@ -31,6 +32,7 @@ export default function ImportHidPage() {
   const mapping = result
     ? mapHidObjects(result.objectGroups, result.rawObjects)
     : null;
+  const terrainPreview = result ? decodeHidTerrain(result.rawDrawing) : null;
 
   const handleFile = async (f: File) => {
     setError(null);
@@ -74,7 +76,7 @@ export default function ImportHidPage() {
   };
 
   const importToCanvas = () => {
-    if (!mapping) return;
+    if (!mapping || !result) return;
     const locale =
       i18n.resolvedLanguage === 'ja'
         ? 'ja-JP'
@@ -86,6 +88,13 @@ export default function ImportHidPage() {
       minute: '2-digit',
     });
     const design = createDesign(t('importHid.designNamePrefix', { time }));
+
+    // 1. Rasterise the drawing polygons into our 80×70 terrain grid first so
+    //    item placement collisions only have to consider the items array.
+    const terrainResult = decodeHidTerrain(result.rawDrawing);
+    design.terrain = terrainResult.terrain;
+
+    // 2. Place mapped objects, re-centring big items so they don't overhang.
     const placed: PlacedItem[] = [];
     let placedCount = 0;
     let skippedOverlap = 0;
@@ -93,8 +102,6 @@ export default function ImportHidPage() {
     for (const obj of mapping.objects) {
       const def = ITEMS_BY_KEY[obj.itemKey];
       if (!def) continue;
-      // Recenter the object on its scaled position (mimics HID's
-      // brush.getObjectCenteredCoordinate so big items don't poke off-grid).
       const x = Math.max(0, Math.min(design.size.cols - def.w, obj.x - Math.floor(def.w / 2)));
       const y = Math.max(0, Math.min(design.size.rows - def.h, obj.y - Math.floor(def.h / 2)));
       const candidate: PlacedItem = {
@@ -127,6 +134,7 @@ export default function ImportHidPage() {
           placedCount,
           skippedCount: mapping.stats.unmapped + skippedOverlap,
           designId: design.id,
+          terrainPainted: terrainResult.stats.paintedCells,
         }),
       );
     } catch {
@@ -291,6 +299,13 @@ export default function ImportHidPage() {
                         unmapped: mapping.stats.unmapped,
                       })}
                     </div>
+                    {terrainPreview && (
+                      <div className="opacity-90 mt-0.5">
+                        {t('importHid.terrainSummary', {
+                          painted: terrainPreview.stats.paintedCells,
+                        })}
+                      </div>
+                    )}
                     {mapping.stats.unmapped > 0 && (
                       <div className="opacity-90 mt-0.5">{t('importHid.mappingHint')}</div>
                     )}
@@ -298,7 +313,7 @@ export default function ImportHidPage() {
                   <AIButton
                     type="primary"
                     onClick={importToCanvas}
-                    disabled={mapping.stats.mapped === 0}
+                    disabled={mapping.stats.mapped === 0 && (terrainPreview?.stats.paintedCells ?? 0) === 0}
                     icon={<Wand2 size={14} />}
                   >
                     {t('importHid.importToCanvas')}

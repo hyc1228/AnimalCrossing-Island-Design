@@ -12,7 +12,8 @@
     "save": "Save",
     "export": "Export",
     "back": "Back",
-    "home": "Home"
+    "home": "Home",
+    "copy": "Copy"
   },
   "language": {
     "label": "Language",
@@ -87,9 +88,16 @@
     "exportPng": "Export PNG",
     "exportPngOk": "PNG downloaded",
     "exportPngFailed": "Export failed, please try again",
-    "shareUrl": "Copy share link",
+    "copyPng": "Copy PNG to clipboard",
+    "copyPngOk": "PNG copied to clipboard",
+    "copyPngFailed": "Copy failed — browser may not support it",
+    "shareUrl": "Share link",
+    "shareTitle": "Share this island",
+    "shareDesc": "Scan the QR or copy the link to open the same island in any browser. The whole design is encoded in the URL — no server required.",
     "shareUrlCopied": "Share link copied",
-    "shareUrlManual": "Auto-copy unavailable. Copy the link manually:"
+    "shareUrlManual": "Auto-copy unavailable. Copy the link manually:",
+    "shareUrlSize": "Link is about {{kb}} KB",
+    "shareQrTooLong": "Too much data for a QR code. Please copy the link directly."
   },
   "toolbar": {
     "select": "Select (V)",
@@ -425,6 +433,7 @@
     "partialImportTitle": "Partial import supported",
     "partialImportDesc": "HID and our catalog only partially overlap: buildings, bridges, inclines, trees and flowers import cleanly. Terrain shapes and smaller décor are skipped for now — you'll see a starter layout you can fine-tune.",
     "mappingSummary": "{{mapped}} placeable · {{unmapped}} skipped",
+    "terrainSummary": "Terrain can repaint {{painted}} non-grass cells",
     "mappingHint": "Skipped items aren't in our catalog yet — the full JSON download keeps every detail.",
     "topUnmapped": "Most skipped types",
     "importToCanvas": "Import to new island",

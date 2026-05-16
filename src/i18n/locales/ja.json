@@ -12,7 +12,8 @@
     "save": "保存",
     "export": "エクスポート",
     "back": "戻る",
-    "home": "ホーム"
+    "home": "ホーム",
+    "copy": "コピー"
   },
   "language": {
     "label": "言語",
@@ -87,9 +88,16 @@
     "exportPng": "PNG を書き出す",
     "exportPngOk": "PNG をダウンロードしました",
     "exportPngFailed": "書き出しに失敗しました",
-    "shareUrl": "共有リンクをコピー",
+    "copyPng": "PNG をクリップボードへ",
+    "copyPngOk": "PNG をコピーしました",
+    "copyPngFailed": "コピー失敗。ブラウザが未対応の可能性があります",
+    "shareUrl": "共有リンク",
+    "shareTitle": "この島を共有",
+    "shareDesc": "QR を読み取るかリンクをコピーすると、別のブラウザでも同じ島を開けます。設計データはすべて URL に圧縮されており、サーバー不要です。",
     "shareUrlCopied": "共有リンクをコピーしました",
-    "shareUrlManual": "自動コピーできません。下のリンクを手動でコピーしてください："
+    "shareUrlManual": "自動コピーできません。下のリンクを手動でコピーしてください：",
+    "shareUrlSize": "リンクサイズ 約 {{kb}} KB",
+    "shareQrTooLong": "データ量が多く QR コードを生成できません。リンクを直接コピーしてください。"
   },
   "toolbar": {
     "select": "選択 (V)",
@@ -425,6 +433,7 @@
     "partialImportTitle": "部分インポートに対応",
     "partialImportDesc": "HID とこのツールの語彙は完全には一致しません。建物 / 橋 / 坂 / 木 / 花はそのままインポート、地形と小物は今のところスキップされます。読み込み後はキャンバスで手動編集できます。",
     "mappingSummary": "配置可能 {{mapped}} · スキップ {{unmapped}}",
+    "terrainSummary": "地形 {{painted}} セル分を再現",
     "mappingHint": "スキップ項目はまだ対応表に無いタイプです。完全な JSON はそのままダウンロードできます。",
     "topUnmapped": "高頻度スキップ",
     "importToCanvas": "新しい島に取り込む",

@@ -15,6 +15,7 @@ import {
 import { canPlace, createDesign, generateId, getRotatedSize, paintCell, paintRect } from '../utils/grid';
 import { saveDesign } from '../utils/storage';
 import { resolveItemDef } from '../data/itemResolver';
+import { exportCanvasThumbnail } from '../utils/canvasHandle';
 
 interface HistoryEntry {
   items: PlacedItem[];
@@ -350,14 +351,29 @@ export const useCanvasStore = create<CanvasState>()(
   })),
 );
 
-// Auto-persist with debounce
+// Auto-persist with debounce. We also capture a small JPEG thumbnail of the
+// current canvas so the gallery / recent designs lists can show real
+// previews. Thumbnail generation is best-effort: any failure falls back to
+// the previously stored value (set on the persisted design, not the live
+// store, so it never triggers another subscription tick).
+const CELL_PX = 18;
 let saveTimer: number | undefined;
 useCanvasStore.subscribe(
   (s) => s.design,
   (design) => {
     if (saveTimer) window.clearTimeout(saveTimer);
     saveTimer = window.setTimeout(() => {
-      saveDesign(design);
+      let thumbnail: string | undefined = design.thumbnail;
+      try {
+        const captured = exportCanvasThumbnail({
+          width: design.size.cols * CELL_PX,
+          height: design.size.rows * CELL_PX,
+        });
+        if (captured) thumbnail = captured;
+      } catch {
+        /* ignore — keep prior thumbnail */
+      }
+      saveDesign(thumbnail ? { ...design, thumbnail } : design);
     }, 400);
   },
 );
