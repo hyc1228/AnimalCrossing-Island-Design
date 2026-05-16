@@ -1,7 +1,46 @@
-import { Circle, Ellipse, Group, Line, Rect, Text } from 'react-konva';
+import { useEffect, useState } from 'react';
+import { Circle, Ellipse, Group, Image as KonvaImage, Line, Rect, Text } from 'react-konva';
 import type { ItemDef } from '../../types';
 
 const CELL = 18;
+
+// Cache of HTMLImageElements indexed by URL so the same NH icon is only
+// fetched once across many placements on the canvas.
+const imageCache = new Map<string, HTMLImageElement>();
+
+function useImage(src: string | undefined): HTMLImageElement | undefined {
+  const [img, setImg] = useState<HTMLImageElement | undefined>(() =>
+    src ? imageCache.get(src) : undefined,
+  );
+  useEffect(() => {
+    if (!src) {
+      setImg(undefined);
+      return;
+    }
+    const cached = imageCache.get(src);
+    if (cached) {
+      setImg(cached);
+      return;
+    }
+    const i = new window.Image();
+    i.crossOrigin = 'anonymous';
+    let cancelled = false;
+    i.onload = () => {
+      if (cancelled) return;
+      imageCache.set(src, i);
+      setImg(i);
+    };
+    i.onerror = () => {
+      if (cancelled) return;
+      setImg(undefined);
+    };
+    i.src = src;
+    return () => {
+      cancelled = true;
+    };
+  }, [src]);
+  return img;
+}
 
 // Darken a hex color
 function darken(hex: string, amount = 0.25): string {
@@ -37,6 +76,10 @@ export function ItemShape({ def, w, h, selected }: ItemShapeProps) {
   const selectedShadow = selected
     ? { shadowColor: '#f59e0b', shadowBlur: 10, shadowOpacity: 0.6 }
     : {};
+
+  if (def.imageUrl) {
+    return <SpriteShape def={def} W={W} H={H} selected={selected} />;
+  }
 
   switch (def.category) {
     case 'tree':
@@ -108,6 +151,72 @@ interface SubProps {
   cellW: number;
   cellH: number;
   selected?: boolean;
+}
+
+/**
+ * Renders any item that has a sprite URL (NH catalog icons). Falls back to a
+ * neutral cream card with the emoji while the image is loading or if it fails.
+ */
+function SpriteShape({
+  def,
+  W,
+  H,
+  selected,
+}: {
+  def: ItemDef;
+  W: number;
+  H: number;
+  selected?: boolean;
+}) {
+  const img = useImage(def.imageUrl);
+  const stroke = selected ? '#f59e0b' : 'rgba(40,70,31,0.25)';
+  const shadow = selected
+    ? { shadowColor: '#f59e0b', shadowBlur: 10, shadowOpacity: 0.6 }
+    : {};
+  const pad = Math.max(1, Math.min(W, H) * 0.08);
+  return (
+    <Group>
+      {/* drop shadow */}
+      <Rect
+        x={1.5}
+        y={3}
+        width={W - 3}
+        height={H - 3}
+        cornerRadius={6}
+        fill="rgba(40, 70, 31, 0.18)"
+        listening={false}
+      />
+      <Rect
+        width={W}
+        height={H}
+        cornerRadius={6}
+        fill={def.color}
+        stroke={stroke}
+        strokeWidth={selected ? 2.5 : 1.2}
+        {...shadow}
+      />
+      {img ? (
+        <KonvaImage
+          image={img}
+          x={pad}
+          y={pad}
+          width={W - pad * 2}
+          height={H - pad * 2}
+          listening={false}
+        />
+      ) : (
+        <Text
+          text={def.emoji ?? '🪑'}
+          fontSize={Math.min(W, H) * 0.55}
+          width={W}
+          height={H}
+          align="center"
+          verticalAlign="middle"
+          listening={false}
+        />
+      )}
+    </Group>
+  );
 }
 
 function TreeShape({ def, cellW, cellH, selected }: SubProps) {

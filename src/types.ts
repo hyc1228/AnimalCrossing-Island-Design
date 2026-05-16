@@ -30,6 +30,11 @@ export interface ItemDef {
   h: number; // grid height
   color: string; // base color for 2D fill
   emoji?: string; // emoji used as icon in 2D rendering
+  /**
+   * Optional sprite URL (e.g. Nookipedia icon). When present, ItemShape will
+   * render this image inside a soft card instead of the emoji block.
+   */
+  imageUrl?: string;
   source?: string; // how to obtain in game
   price?: number; // approximate bell cost
   diy?: boolean;

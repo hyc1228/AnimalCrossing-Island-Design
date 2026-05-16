@@ -14,7 +14,7 @@ import {
 } from '../types';
 import { canPlace, createDesign, generateId, getRotatedSize, paintCell, paintRect } from '../utils/grid';
 import { saveDesign } from '../utils/storage';
-import { ITEMS_BY_KEY } from '../data/items';
+import { resolveItemDef } from '../data/itemResolver';
 
 interface HistoryEntry {
   items: PlacedItem[];
@@ -119,7 +119,7 @@ export const useCanvasStore = create<CanvasState>()(
       })),
 
     placeItem: (itemKey, x, y, rotation = 0) => {
-      const def = ITEMS_BY_KEY[itemKey];
+      const def = resolveItemDef(itemKey);
       if (!def) return undefined;
       const state = get();
       if (state.layerVisibility[def.layer].locked) return undefined;

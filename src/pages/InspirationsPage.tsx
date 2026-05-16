@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ChevronLeft, Trash2, Wand2, Download, Image as ImageIcon } from 'lucide-react';
+import { ChevronLeft, Trash2, Wand2, Download, Image as ImageIcon, Search } from 'lucide-react';
 import {
   Button as AIButton,
   Card as AICard,
@@ -19,6 +19,7 @@ import { ITEMS_BY_KEY } from '../data/items';
 import { canPlace, createDesign, generateId } from '../utils/grid';
 import { saveDesign, setCurrentDesignId } from '../utils/storage';
 import type { PlacedItem } from '../types';
+import { findSimilar, type SimilarityHit } from '../utils/similarity';
 
 type DensityCode = 'sparse' | 'medium' | 'dense';
 
@@ -216,6 +217,7 @@ export default function InspirationsPage() {
       {detail && (
         <InspirationDetailModal
           insp={detail}
+          allInspirations={items}
           onClose={() => setDetailId(null)}
           onApply={() => {
             setDetailId(null);
@@ -226,6 +228,7 @@ export default function InspirationsPage() {
             setDetailId(null);
             setPendingDelete(detail);
           }}
+          onOpenOther={(id) => setDetailId(id)}
         />
       )}
 
@@ -323,20 +326,29 @@ function InspirationCard({
 
 function InspirationDetailModal({
   insp,
+  allInspirations,
   onClose,
   onApply,
   onExport,
   onDelete,
+  onOpenOther,
 }: {
   insp: SavedInspiration;
+  allInspirations: SavedInspiration[];
   onClose: () => void;
   onApply: () => void;
   onExport: () => void;
   onDelete: () => void;
+  onOpenOther: (id: string) => void;
 }) {
   const { t } = useTranslation();
   const result = insp.result;
   const densityLabel = (d: DensityCode) => t(`recognize.density.${d}`);
+
+  const similar = useMemo<SimilarityHit[]>(
+    () => findSimilar(insp, allInspirations, 4),
+    [insp, allInspirations],
+  );
 
   return (
     <AIModal
@@ -426,6 +438,45 @@ function InspirationDetailModal({
             })}
           </div>
         </div>
+
+        {similar.length > 0 && (
+          <div>
+            <div className="flex items-center gap-1.5 text-xs font-extrabold text-leaf-800 mb-1.5">
+              <Search size={12} className="text-mint-500" />
+              {t('inspirations.similarTitle')}
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {similar.map((hit) => (
+                <button
+                  key={hit.inspiration.id}
+                  onClick={() => onOpenOther(hit.inspiration.id)}
+                  className="text-left rounded-2xl border-2 border-cream-200 bg-cream-50 hover:border-mint-300 hover:-translate-y-0.5 transition overflow-hidden"
+                  title={hit.inspiration.result.raw.description}
+                >
+                  <div className="aspect-square bg-cream-100 overflow-hidden">
+                    <img
+                      src={hit.inspiration.thumbnail}
+                      alt=""
+                      loading="lazy"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="p-1.5">
+                    <div className="text-[10px] font-extrabold text-mint-700">
+                      {t('inspirations.similarMatch', { value: Math.round(hit.score * 100) })}
+                    </div>
+                    <div className="text-[9px] text-leaf-600 mt-0.5 line-clamp-1">
+                      {t('inspirations.similarBreakdown', {
+                        style: Math.round(hit.styleScore * 100),
+                        items: Math.round(hit.itemScore * 100),
+                      })}
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </AIModal>
   );

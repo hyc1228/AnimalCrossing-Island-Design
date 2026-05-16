@@ -11,13 +11,18 @@ import {
   Save,
   RotateCw,
   Grid3x3,
+  Image as ImageIcon,
+  Share2,
 } from 'lucide-react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useCanvasStore } from '../../stores/canvasStore';
 import { useUIStore } from '../../stores/uiStore';
 import { TERRAIN } from '../../types';
 import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
+import { exportCanvasPng, downloadDataUrl } from '../../utils/canvasHandle';
+import { buildShareUrl } from '../../utils/shareDesign';
 
 const TERRAIN_OPTIONS = [
   { code: TERRAIN.GRASS, key: 'grass', color: '#8fc662' },
@@ -53,8 +58,45 @@ export default function Toolbar() {
   const deleteSelected = useCanvasStore((s) => s.deleteSelected);
   const showGrid = useUIStore((s) => s.showGrid);
   const toggleGrid = useUIStore((s) => s.toggleGrid);
+  const design = useCanvasStore((s) => s.design);
+
+  const [toast, setToast] = useState<string | null>(null);
 
   const isTerrainTool = tool === 'terrain-brush' || tool === 'terrain-rect';
+
+  const handleExportPng = () => {
+    const CELL_PX = 18;
+    const url = exportCanvasPng({
+      fitToDesign: true,
+      designPx: {
+        width: design.size.cols * CELL_PX,
+        height: design.size.rows * CELL_PX,
+      },
+      pixelRatio: 2,
+    });
+    if (!url) {
+      setToast(t('editor.exportPngFailed'));
+      window.setTimeout(() => setToast(null), 3000);
+      return;
+    }
+    const safeName = design.name.replace(/[^\w\u4e00-\u9fa5-]/g, '_').slice(0, 40);
+    downloadDataUrl(`ACNH-${safeName}-${Date.now()}.png`, url);
+    setToast(t('editor.exportPngOk'));
+    window.setTimeout(() => setToast(null), 2500);
+  };
+
+  const handleShareUrl = async () => {
+    const url = buildShareUrl(design);
+    try {
+      await navigator.clipboard.writeText(url);
+      setToast(t('editor.shareUrlCopied'));
+    } catch {
+      // Fallback: open prompt so the user can still copy manually
+      window.prompt(t('editor.shareUrlManual'), url);
+      setToast(t('editor.shareUrlCopied'));
+    }
+    window.setTimeout(() => setToast(null), 2500);
+  };
 
   return (
     <div className="panel mx-3 mt-3 p-2 flex items-center gap-2 flex-wrap">
@@ -111,6 +153,13 @@ export default function Toolbar() {
 
       <div className="w-px h-6 bg-cream-300 mx-1" />
 
+      <ToolBtn onClick={handleExportPng} title={t('editor.exportPng')}>
+        <ImageIcon size={16} />
+      </ToolBtn>
+      <ToolBtn onClick={handleShareUrl} title={t('editor.shareUrl')}>
+        <Share2 size={16} />
+      </ToolBtn>
+
       <button
         onClick={() => {
           if (confirm(t('editor.clearConfirm'))) clearAll();
@@ -163,6 +212,12 @@ export default function Toolbar() {
               <span className="w-4 text-center font-bold">{brushSize}</span>
             </div>
           )}
+        </div>
+      )}
+
+      {toast && (
+        <div className="basis-full flex justify-center pt-1">
+          <span className="chip chip-mint text-xs px-3 py-1 animate-[fadeUp_0.25s_ease-out]">{toast}</span>
         </div>
       )}
     </div>

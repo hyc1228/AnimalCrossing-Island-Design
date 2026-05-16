@@ -5,8 +5,9 @@ import type Konva from 'konva';
 import { useCanvasStore } from '../../stores/canvasStore';
 import { useUIStore } from '../../stores/uiStore';
 import { TERRAIN } from '../../types';
-import { ITEMS_BY_KEY } from '../../data/items';
+import { resolveItemDef } from '../../data/itemResolver';
 import { getRotatedSize } from '../../utils/grid';
+import { registerCanvasStage } from '../../utils/canvasHandle';
 import { ItemShape } from './itemShapes';
 
 const CELL = 18; // pixel size per grid cell at zoom 1
@@ -279,6 +280,12 @@ export default function IslandCanvas({ width, height }: IslandCanvasProps) {
     return () => window.removeEventListener('keydown', onKey);
   }, [selectedPlacedId, deleteItem]);
 
+  // Expose the stage for ad-hoc consumers (PNG export, etc.).
+  useEffect(() => {
+    registerCanvasStage(stageRef.current);
+    return () => registerCanvasStage(null);
+  }, []);
+
   const cursorStyle = useMemo(() => {
     if (tool === 'pan') return 'grab';
     if (tool === 'place' || tool === 'terrain-brush' || tool === 'terrain-rect') return 'crosshair';
@@ -288,7 +295,7 @@ export default function IslandCanvas({ width, height }: IslandCanvasProps) {
 
   const previewItem = useMemo(() => {
     if (tool !== 'place' || !selectedItemKey || !hoverCell) return null;
-    const def = ITEMS_BY_KEY[selectedItemKey];
+    const def = resolveItemDef(selectedItemKey);
     if (!def) return null;
     return { def, x: hoverCell.x, y: hoverCell.y };
   }, [tool, selectedItemKey, hoverCell]);
@@ -472,7 +479,7 @@ export default function IslandCanvas({ width, height }: IslandCanvasProps) {
         {(['path', 'building', 'decoration'] as const).map((layer) => (
           <Layer key={layer} visible={layerVisibility[layer].visible}>
             {itemsByLayer[layer]?.map((it) => {
-              const def = ITEMS_BY_KEY[it.itemKey];
+              const def = resolveItemDef(it.itemKey);
               if (!def) return null;
               const size = getRotatedSize(it.w, it.h, it.rotation);
               const isSelected = selectedPlacedId === it.id;

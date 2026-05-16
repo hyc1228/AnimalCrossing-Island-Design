@@ -14,6 +14,7 @@ import {
 import { createDesign } from '../utils/grid';
 import { deleteDesign, getCurrentDesignId, loadAllDesigns, saveDesign, setCurrentDesignId } from '../utils/storage';
 import { useInspirationsStore } from '../stores/inspirationsStore';
+import { consumeSharedDesignFromHash } from '../utils/shareDesign';
 import type { IslandDesign } from '../types';
 import LanguageSwitcher from '../components/LanguageSwitcher/LanguageSwitcher';
 
@@ -26,9 +27,18 @@ export default function HomePage() {
   const inspirationCount = useInspirationsStore((s) => s.items.length);
 
   useEffect(() => {
+    // Check for a shared design in the URL hash first. If present, import
+    // it into local storage and jump straight to the editor — no extra clicks.
+    const shared = consumeSharedDesignFromHash();
+    if (shared) {
+      saveDesign(shared);
+      setCurrentDesignId(shared.id);
+      navigate(`/editor/${shared.id}`);
+      return;
+    }
     setDesigns(loadAllDesigns());
     setCurId(getCurrentDesignId());
-  }, []);
+  }, [navigate]);
 
   const handleNewDesign = () => {
     const d = createDesign(t('home.newIslandName', { index: designs.length + 1 }));

@@ -2,7 +2,8 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Download, Coins } from 'lucide-react';
 import { useCanvasStore } from '../../stores/canvasStore';
-import { ITEMS_BY_KEY, ITEM_CATEGORIES } from '../../data/items';
+import { ITEM_CATEGORIES } from '../../data/items';
+import { resolveItemDef } from '../../data/itemResolver';
 import { itemName, itemSource } from '../../i18n/helpers';
 
 interface AggregatedItem {
@@ -24,7 +25,7 @@ export default function FurnitureList() {
   const aggregated = useMemo<AggregatedItem[]>(() => {
     const map = new Map<string, AggregatedItem>();
     items.forEach((it) => {
-      const def = ITEMS_BY_KEY[it.itemKey];
+      const def = resolveItemDef(it.itemKey);
       if (!def) return;
       const existing = map.get(it.itemKey);
       const price = def.price ?? 0;

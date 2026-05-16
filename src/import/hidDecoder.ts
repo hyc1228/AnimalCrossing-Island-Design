@@ -42,6 +42,12 @@ export interface HidDecodedMap {
   edgeTiles?: HidEdgeTiles;
   /** Raw JSON payload (post-decompression), for advanced users / debugging. */
   rawJson: string;
+  /**
+   * Raw `objects` map keyed by `category_type` → flat `[x0,y0,x1,y1,...]`
+   * positions array. Preserved verbatim so downstream consumers can map
+   * into their own coordinate spaces.
+   */
+  rawObjects: Record<string, number[]>;
 }
 
 export class HidDecodeError extends Error {
@@ -91,14 +97,16 @@ function summarise(raw: Record<string, unknown>, rawJson: string): HidDecodedMap
 
   const objectsRaw = (raw.objects ?? {}) as Record<string, unknown>;
   const objectGroups: HidObjectGroup[] = [];
+  const rawObjects: Record<string, number[]> = {};
   let totalObjects = 0;
   for (const [key, value] of Object.entries(objectsRaw)) {
     // HID encodes positions as a flat [x0,y0,x1,y1,...] array, so the count
     // is the array length / 2. Some legacy maps stored a map of id→object;
     // tolerate that shape as a "size of values" count.
     let count = 0;
-    if (Array.isArray(value)) {
+    if (Array.isArray(value) && value.every((v) => typeof v === 'number')) {
       count = Math.floor(value.length / 2);
+      rawObjects[key] = value as number[];
     } else if (value && typeof value === 'object') {
       count = Object.keys(value as Record<string, unknown>).length;
     }
@@ -130,6 +138,7 @@ function summarise(raw: Record<string, unknown>, rawJson: string): HidDecodedMap
     drawingLayers,
     edgeTiles,
     rawJson,
+    rawObjects,
   };
 }
 

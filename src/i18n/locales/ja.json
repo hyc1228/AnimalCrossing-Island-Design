@@ -83,7 +83,13 @@
     "expandRight": "右パネルを開く",
     "autoSaved": "自動保存",
     "clearAll": "クリア",
-    "clearConfirm": "キャンバス全体をクリアしますか？"
+    "clearConfirm": "キャンバス全体をクリアしますか？",
+    "exportPng": "PNG を書き出す",
+    "exportPngOk": "PNG をダウンロードしました",
+    "exportPngFailed": "書き出しに失敗しました",
+    "shareUrl": "共有リンクをコピー",
+    "shareUrlCopied": "共有リンクをコピーしました",
+    "shareUrlManual": "自動コピーできません。下のリンクを手動でコピーしてください："
   },
   "toolbar": {
     "select": "選択 (V)",
@@ -102,8 +108,25 @@
   "palette": {
     "title": "アイテム",
     "search": "アイテムを検索...",
+    "searchNh": "2000+ NH 家具を検索...",
     "empty": "一致するアイテムなし",
     "hint": "ヒント：アイテムを選択してキャンバスをクリックで配置。もう一度クリックで解除。",
+    "hintNh": "NH 全データ：画像は Nookipedia 提供。すべて「装飾」レイヤーに配置されます。",
+    "modeCurated": "厳選 60",
+    "modeNh": "NH {{count}}",
+    "nhCount": "表示 {{shown}} / {{total}} 件",
+    "nhThemes": {
+      "all": "すべて",
+      "cute": "キュート",
+      "cool": "クール",
+      "elegant": "エレガント",
+      "modern": "モダン",
+      "music": "ミュージック",
+      "party": "パーティー",
+      "civic": "パブリック",
+      "asian": "和風",
+      "outdoorsy": "アウトドア"
+    },
     "categories": {
       "building": "建物",
       "bridge": "橋",
@@ -390,14 +413,22 @@
     "clearAllTitle": "ライブラリを空にしますか？",
     "clearAllConfirm": "保存済みの {{count}} 枚をすべて削除します。元に戻せません。",
     "deleteTitle": "このインスピレーションを削除？",
-    "deleteConfirm": "ライブラリからこの参考画像を削除します。元に戻せません。"
+    "deleteConfirm": "ライブラリからこの参考画像を削除します。元に戻せません。",
+    "similarTitle": "似ている参考画像",
+    "similarMatch": "{{value}}% 類似",
+    "similarBreakdown": "スタイル {{style}}% · アイテム {{items}}%"
   },
   "importHid": {
     "headerTitle": "HID 共有画像を読み込む",
     "subtitle": "Happy Island Designer PNG デコーダ",
-    "subtitleDesc": "HID からエクスポートした PNG をドロップすると、含まれるオブジェクト、地形レイヤー、メタデータをプレビューできます。完全な JSON もダウンロード可能。",
-    "previewOnlyTitle": "現在はプレビューのみ",
-    "previewOnlyDesc": "HID のオブジェクト分類はこのツールと異なります。完全なインポートには対応表が必要で、次回のリリース予定です。",
+    "subtitleDesc": "HID からエクスポートした PNG をドロップすると、含まれるオブジェクト、地形、メタデータをプレビュー、完全な JSON をダウンロード、または建物・橋・坂・木・花をワンクリックで新しい島に取り込めます。",
+    "partialImportTitle": "部分インポートに対応",
+    "partialImportDesc": "HID とこのツールの語彙は完全には一致しません。建物 / 橋 / 坂 / 木 / 花はそのままインポート、地形と小物は今のところスキップされます。読み込み後はキャンバスで手動編集できます。",
+    "mappingSummary": "配置可能 {{mapped}} · スキップ {{unmapped}}",
+    "mappingHint": "スキップ項目はまだ対応表に無いタイプです。完全な JSON はそのままダウンロードできます。",
+    "topUnmapped": "高頻度スキップ",
+    "importToCanvas": "新しい島に取り込む",
+    "designNamePrefix": "HID 取り込み {{time}}",
     "uploadPrompt": "HID PNG をアップロード",
     "uploadDesc": "ここにドロップ、またはクリックして選択\n（HID 純正の書き出し画像のみ対応。スクショや JPEG 化されたものは無効）",
     "tipsTitle": "ヒント",

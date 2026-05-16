@@ -83,7 +83,13 @@
     "expandRight": "Expand right panel",
     "autoSaved": "Auto-saved",
     "clearAll": "Clear",
-    "clearConfirm": "Clear the entire canvas?"
+    "clearConfirm": "Clear the entire canvas?",
+    "exportPng": "Export PNG",
+    "exportPngOk": "PNG downloaded",
+    "exportPngFailed": "Export failed, please try again",
+    "shareUrl": "Copy share link",
+    "shareUrlCopied": "Share link copied",
+    "shareUrlManual": "Auto-copy unavailable. Copy the link manually:"
   },
   "toolbar": {
     "select": "Select (V)",
@@ -102,8 +108,25 @@
   "palette": {
     "title": "Items",
     "search": "Search items...",
+    "searchNh": "Search 2000+ NH furniture...",
     "empty": "No matching items",
     "hint": "Tip: Click an item then click on the canvas to place. Click again to deselect.",
+    "hintNh": "Full NH catalog: images from Nookipedia. Everything places on the décor layer.",
+    "modeCurated": "Curated 60",
+    "modeNh": "NH {{count}}",
+    "nhCount": "Showing {{shown}} / {{total}}",
+    "nhThemes": {
+      "all": "All",
+      "cute": "Cute",
+      "cool": "Cool",
+      "elegant": "Elegant",
+      "modern": "Modern",
+      "music": "Music",
+      "party": "Party",
+      "civic": "Civic",
+      "asian": "Asian",
+      "outdoorsy": "Outdoorsy"
+    },
     "categories": {
       "building": "Buildings",
       "bridge": "Bridges",
@@ -390,14 +413,22 @@
     "clearAllTitle": "Clear inspirations library?",
     "clearAllConfirm": "This will permanently delete all {{count}} saved references.",
     "deleteTitle": "Remove this inspiration?",
-    "deleteConfirm": "Remove this reference image from your inspirations library? This cannot be undone."
+    "deleteConfirm": "Remove this reference image from your inspirations library? This cannot be undone.",
+    "similarTitle": "Similar references",
+    "similarMatch": "{{value}}% match",
+    "similarBreakdown": "Style {{style}}% · Items {{items}}%"
   },
   "importHid": {
     "headerTitle": "Import HID share image",
     "subtitle": "Happy Island Designer PNG decoder",
-    "subtitleDesc": "Drop a PNG exported from HID to inspect its objects, terrain layers and metadata. You can also download the full JSON payload.",
-    "previewOnlyTitle": "Preview-only for now",
-    "previewOnlyDesc": "HID uses its own object vocabulary; mapping it onto our editor needs a translation table — that's queued for a later release.",
+    "subtitleDesc": "Drop a PNG exported from HID to inspect its objects, terrain layers and metadata. Download the full JSON or import the buildings, bridges, trees and flowers straight onto a new island.",
+    "partialImportTitle": "Partial import supported",
+    "partialImportDesc": "HID and our catalog only partially overlap: buildings, bridges, inclines, trees and flowers import cleanly. Terrain shapes and smaller décor are skipped for now — you'll see a starter layout you can fine-tune.",
+    "mappingSummary": "{{mapped}} placeable · {{unmapped}} skipped",
+    "mappingHint": "Skipped items aren't in our catalog yet — the full JSON download keeps every detail.",
+    "topUnmapped": "Most skipped types",
+    "importToCanvas": "Import to new island",
+    "designNamePrefix": "HID import {{time}}",
     "uploadPrompt": "Upload a HID PNG",
     "uploadDesc": "Drop here or click to choose\n(Must be the original HID export — screenshots / JPEG re-saves wipe the hidden data)",
     "tipsTitle": "Tips",

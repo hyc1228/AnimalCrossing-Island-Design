@@ -4,7 +4,7 @@ import { OrbitControls, PerspectiveCamera, Sky } from '@react-three/drei';
 import { useTranslation } from 'react-i18next';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import { useCanvasStore } from '../../stores/canvasStore';
-import { ITEMS_BY_KEY } from '../../data/items';
+import { resolveItemDef } from '../../data/itemResolver';
 import { TERRAIN } from '../../types';
 import { getRotatedSize } from '../../utils/grid';
 
@@ -145,7 +145,7 @@ export default function Preview3D() {
           {/* Items */}
           {design.items.map((it) => {
             if (!layerVisibility[it.layer].visible) return null;
-            const def = ITEMS_BY_KEY[it.itemKey];
+            const def = resolveItemDef(it.itemKey);
             if (!def) return null;
             const size = getRotatedSize(it.w, it.h, it.rotation);
             const px = it.x - cx + size.w / 2;

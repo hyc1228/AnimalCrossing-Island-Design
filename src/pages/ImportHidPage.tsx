@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ChevronLeft, Upload, AlertCircle, Download, FileText, Sparkles } from 'lucide-react';
+import { ChevronLeft, Upload, AlertCircle, Download, FileText, Sparkles, Wand2 } from 'lucide-react';
 import {
   Button as AIButton,
   Card as AICard,
@@ -11,9 +11,15 @@ import {
 } from 'animal-island-ui';
 import LanguageSwitcher from '../components/LanguageSwitcher/LanguageSwitcher';
 import { decodeHidPng, HidDecodeError, type HidDecodedMap } from '../import/hidDecoder';
+import { mapHidObjects } from '../import/hidCatalog';
+import { ITEMS_BY_KEY } from '../data/items';
+import { canPlace, createDesign, generateId } from '../utils/grid';
+import { saveDesign, setCurrentDesignId } from '../utils/storage';
+import type { PlacedItem } from '../types';
 
 export default function ImportHidPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -21,6 +27,10 @@ export default function ImportHidPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<HidDecodedMap | null>(null);
+
+  const mapping = result
+    ? mapHidObjects(result.objectGroups, result.rawObjects)
+    : null;
 
   const handleFile = async (f: File) => {
     setError(null);
@@ -63,6 +73,69 @@ export default function ImportHidPage() {
     URL.revokeObjectURL(url);
   };
 
+  const importToCanvas = () => {
+    if (!mapping) return;
+    const locale =
+      i18n.resolvedLanguage === 'ja'
+        ? 'ja-JP'
+        : i18n.resolvedLanguage === 'en'
+          ? 'en-US'
+          : 'zh-CN';
+    const time = new Date().toLocaleString(locale, {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    const design = createDesign(t('importHid.designNamePrefix', { time }));
+    const placed: PlacedItem[] = [];
+    let placedCount = 0;
+    let skippedOverlap = 0;
+
+    for (const obj of mapping.objects) {
+      const def = ITEMS_BY_KEY[obj.itemKey];
+      if (!def) continue;
+      // Recenter the object on its scaled position (mimics HID's
+      // brush.getObjectCenteredCoordinate so big items don't poke off-grid).
+      const x = Math.max(0, Math.min(design.size.cols - def.w, obj.x - Math.floor(def.w / 2)));
+      const y = Math.max(0, Math.min(design.size.rows - def.h, obj.y - Math.floor(def.h / 2)));
+      const candidate: PlacedItem = {
+        id: generateId(),
+        itemKey: obj.itemKey,
+        layer: def.layer,
+        x,
+        y,
+        w: def.w,
+        h: def.h,
+        rotation: 0,
+      };
+      if (canPlace(candidate, placed, design.size.cols, design.size.rows)) {
+        placed.push(candidate);
+        placedCount++;
+      } else {
+        skippedOverlap++;
+      }
+    }
+
+    design.items = placed;
+    saveDesign(design);
+    setCurrentDesignId(design.id);
+
+    // Pass stats forward so the editor's existing toast can surface them.
+    try {
+      sessionStorage.setItem(
+        'ac_recognize_skipped',
+        JSON.stringify({
+          placedCount,
+          skippedCount: mapping.stats.unmapped + skippedOverlap,
+          designId: design.id,
+        }),
+      );
+    } catch {
+      /* ignore */
+    }
+
+    navigate(`/editor/${design.id}`);
+  };
+
   return (
     <div className="min-h-screen w-full flex flex-col relative">
       <header className="px-6 lg:px-12 py-5 flex items-center justify-between flex-wrap gap-3 border-b-2 border-cream-200 bg-cream-50/70 backdrop-blur-sm relative z-10">
@@ -84,13 +157,15 @@ export default function ImportHidPage() {
           <p className="text-leaf-700/85 leading-relaxed">{t('importHid.subtitleDesc')}</p>
         </div>
 
-        <AICard color="app-yellow" className="!p-4 flex items-start gap-3 mb-5 max-w-2xl mx-auto">
-          <AlertCircle size={18} className="shrink-0 mt-0.5" />
-          <div className="flex-1 min-w-0">
-            <h3 className="font-extrabold text-sm">{t('importHid.previewOnlyTitle')}</h3>
-            <p className="text-xs mt-0.5 leading-relaxed opacity-90">{t('importHid.previewOnlyDesc')}</p>
-          </div>
-        </AICard>
+        {!result && (
+          <AICard color="app-yellow" className="!p-4 flex items-start gap-3 mb-5 max-w-2xl mx-auto">
+            <AlertCircle size={18} className="shrink-0 mt-0.5" />
+            <div className="flex-1 min-w-0">
+              <h3 className="font-extrabold text-sm">{t('importHid.partialImportTitle')}</h3>
+              <p className="text-xs mt-0.5 leading-relaxed opacity-90">{t('importHid.partialImportDesc')}</p>
+            </div>
+          </AICard>
+        )}
 
         <div className="grid lg:grid-cols-5 gap-5">
           <section className="lg:col-span-2 space-y-3">
@@ -184,7 +259,7 @@ export default function ImportHidPage() {
               </AICard>
             )}
 
-            {result && (
+            {result && mapping && (
               <AICard className="!p-5">
                 <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
                   <div className="flex items-center gap-2 flex-wrap">
@@ -207,6 +282,37 @@ export default function ImportHidPage() {
                     {t('importHid.downloadJson')}
                   </AIButton>
                 </div>
+
+                <AICard color="app-teal" className="!p-3 mb-3 flex items-center justify-between gap-3 flex-wrap">
+                  <div className="text-xs leading-relaxed">
+                    <div className="font-extrabold text-sm">
+                      {t('importHid.mappingSummary', {
+                        mapped: mapping.stats.mapped,
+                        unmapped: mapping.stats.unmapped,
+                      })}
+                    </div>
+                    {mapping.stats.unmapped > 0 && (
+                      <div className="opacity-90 mt-0.5">{t('importHid.mappingHint')}</div>
+                    )}
+                  </div>
+                  <AIButton
+                    type="primary"
+                    onClick={importToCanvas}
+                    disabled={mapping.stats.mapped === 0}
+                    icon={<Wand2 size={14} />}
+                  >
+                    {t('importHid.importToCanvas')}
+                  </AIButton>
+                </AICard>
+
+                {mapping.stats.topUnmapped.length > 0 && (
+                  <div className="mb-3 text-[11px] text-leaf-700/85">
+                    <span className="font-bold text-leaf-800">{t('importHid.topUnmapped')}:</span>{' '}
+                    {mapping.stats.topUnmapped
+                      .map((u) => `${u.key} × ${u.count}`)
+                      .join(' · ')}
+                  </div>
+                )}
 
                 <AIDivider type="line-teal" style={{ marginTop: 4, marginBottom: 14 }} />
 
