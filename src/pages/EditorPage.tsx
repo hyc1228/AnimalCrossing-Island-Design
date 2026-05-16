@@ -45,6 +45,20 @@ export default function EditorPage() {
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const [canvasSize, setCanvasSize] = useState({ width: 800, height: 600 });
   const [recognizeToast, setRecognizeToast] = useState<{ placed: number; skipped: number } | null>(null);
+  const setLeftOpen = useUIStore((s) => s.setLeftPanelOpen);
+  const setRightOpen = useUIStore((s) => s.setRightPanelOpen);
+
+  // Auto-collapse both side panels on phone-width first load so the canvas
+  // gets the whole viewport. Users can re-open via the bottom dock.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (window.innerWidth < 768) {
+      setLeftOpen(false);
+      setRightOpen(false);
+    }
+    // Only run once on mount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Load design on mount
   useEffect(() => {
@@ -142,6 +156,17 @@ export default function EditorPage() {
       <Toolbar />
 
       <div className="flex-1 flex gap-3 p-3 min-h-0 relative">
+        {/* Mobile backdrop: close panels by tapping the canvas region. */}
+        {(leftOpen || rightOpen) && (
+          <button
+            aria-label="dismiss panels"
+            onClick={() => {
+              setLeftOpen(false);
+              setRightOpen(false);
+            }}
+            className="md:hidden absolute inset-0 z-10 bg-black/30 backdrop-blur-[1px]"
+          />
+        )}
         {/* Left panel: item palette */}
         {leftOpen && (
           <aside

@@ -29,6 +29,7 @@
     "continueLast": "Continue last design",
     "browseTemplates": "Browse templates",
     "recognizeImage": "Recognize from Image",
+    "generateIsland": "AI Generate",
     "features": {
       "recognize": {
         "title": "Recognize from Image",
@@ -40,8 +41,9 @@
         "desc": "80×70 top-down grid with four independent layers — paint terrain, lay paths, place furniture."
       },
       "ai": {
-        "title": "AI Suggestions",
-        "desc": "Pick a style; AI generates a layout for the whole island or a selected area. Keep what you like."
+        "title": "AI Text Generation",
+        "desc": "Describe your dream island in one sentence; AI returns an item list and drops it on the canvas.",
+        "badge": "NEW"
       },
       "preview": {
         "title": "3D Block Preview",
@@ -458,5 +460,54 @@
     "errorNoPayload": "No HID payload found inside the PNG. The file isn't a HID export, or it was screenshotted / re-saved as JPEG, which destroys the hidden data.",
     "errorCorrupt": "The hidden payload is corrupted or not a HID map.",
     "errorImage": "Couldn't read the image. Try another file."
+  },
+  "generate": {
+    "headerTitle": "AI Text Generation",
+    "styleLabel": "Style",
+    "densityLabel": "Density",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Example: A Japanese tea garden with a koi pond, a few seats, and a cherry blossom path…",
+    "examplesLabel": "Inspirations",
+    "examples": [
+      "Japanese tea garden: koi pond + stone lanterns + cherry path",
+      "Forest cafe corner: wooden chairs, pergola, warm streetlights",
+      "Fairy mushroom camp: tent, campfire, mushroom circle",
+      "Modern minimalist plaza: fountain, sculpture, iron streetlights",
+      "Country garden: windmill, orchard, well, benches"
+    ],
+    "startGenerate": "Generate",
+    "generating": "AI is sketching…",
+    "regenerate": "Try another",
+    "emptyTitle": "Your generated scene will appear here",
+    "emptyDesc": "Pick a style → describe what you want → AI returns an item list and a starter layout you can drop on a fresh island.",
+    "loadingTitle": "{{model}} thinking…",
+    "loadingDesc": "Usually 5–15 seconds",
+    "applyToCanvas": "Apply to new island",
+    "exportTitle": "ACNH AI Text Generation - Item List",
+    "exportPrompt": "Prompt: {{description}}",
+    "designNamePrefix": "AI Island {{time}}",
+    "descriptionEmpty": "(no description)",
+    "tipsTitle": "Tips",
+    "tip1": "Name a few key elements (e.g. \"koi pond\", \"cherry tree\", \"cafe chair\") — AI hit-rate improves a lot.",
+    "tip2": "Tap \"Try another\" to explore different moods.",
+    "tip3": "Every generation is saved to your inspirations library for later reuse.",
+    "errorFallback": "Generation failed. Please retry.",
+    "sharedNote": "Generated results auto-save to your inspirations library."
+  },
+  "scenes": {
+    "title": "Scene Packs",
+    "subtitle": "Stamp a curated cluster of items onto the canvas in one click. Conflicts are avoided automatically.",
+    "toolbarTitle": "Scene packs",
+    "filterAll": "All",
+    "empty": "No packs match this style — try \"All\".",
+    "placeHint": "Tap to place on canvas",
+    "placedToast": "Placed \"{{name}}\" ({{count}} items)",
+    "cafeCorner": { "name": "Cafe Corner", "desc": "Parasol, tea table, cafe chairs and a streetlight — romantic alfresco seating." },
+    "zenCorner": { "name": "Zen Garden", "desc": "Torii gate, stone lanterns, koi pond, rock garden and bamboo." },
+    "kidsPlayground": { "name": "Kids Playground", "desc": "Sandbox, swing, windmill and log benches — a small play area." },
+    "campground": { "name": "Forest Camp", "desc": "Tent + campfire + log benches + mushrooms + pine trees." },
+    "modernPlaza": { "name": "Modern Plaza", "desc": "Center fountain + sculptures + benches + streetlight + flag pole." },
+    "farmYard": { "name": "Farm Yard", "desc": "Windmill, well, apple trees, tulips and a wooden bench." },
+    "cherryPath": { "name": "Cherry Path", "desc": "Cherry trees flanking a wooden bench under garden lamps." }
   }
 }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { LayoutGrid, Plus, Trash2, ChevronRight, Camera, BookHeart, FileImage } from 'lucide-react';
+import { LayoutGrid, Plus, Trash2, ChevronRight, Camera, BookHeart, FileImage, Wand2 } from 'lucide-react';
 import {
   Button as AIButton,
   Card as AICard,
@@ -116,6 +116,9 @@ export default function HomePage() {
               <AIButton type="primary" size="large" onClick={() => navigate('/recognize')} icon={<Camera size={18} />}>
                 {t('home.recognizeImage')}
               </AIButton>
+              <AIButton type="primary" size="large" onClick={() => navigate('/generate')} icon={<Wand2 size={18} />}>
+                {t('home.generateIsland')}
+              </AIButton>
               <AIButton size="large" onClick={handleNewDesign} icon={<Plus size={18} />}>
                 {t('home.newIsland')}
               </AIButton>
@@ -172,6 +175,8 @@ export default function HomePage() {
               color="app-yellow"
               title={t('home.features.ai.title')}
               desc={t('home.features.ai.desc')}
+              onClick={() => navigate('/generate')}
+              badge={t('home.features.ai.badge')}
             />
             <FeatureCard
               iconName="icon-map"

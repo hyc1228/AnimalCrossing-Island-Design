@@ -29,6 +29,7 @@
     "continueLast": "继续上次设计",
     "browseTemplates": "浏览模板",
     "recognizeImage": "参考图识别",
+    "generateIsland": "AI 文本生成",
     "features": {
       "recognize": {
         "title": "参考图识别",
@@ -40,8 +41,9 @@
         "desc": "80×70 俯视网格，四图层独立编辑，画地形、铺道路、摆家具一气呵成。"
       },
       "ai": {
-        "title": "AI 智能建议",
-        "desc": "选个风格，AI 帮你在整岛或选中区域自动生成布局，喜欢就保留。"
+        "title": "AI 文本生成",
+        "desc": "用一句中文描述你的梦想岛屿，AI 出物品清单 + 自动放到画布。",
+        "badge": "新"
       },
       "preview": {
         "title": "3D 积木预览",
@@ -458,5 +460,54 @@
     "errorNoPayload": "PNG 中未找到 HID 数据。该图可能不是 HID 原版导出，或被压成 JPEG/截图导致隐藏数据丢失。",
     "errorCorrupt": "隐藏的数据损坏或非 HID 格式。",
     "errorImage": "图片无法读取，请换一张试试。"
+  },
+  "generate": {
+    "headerTitle": "AI 文本生成",
+    "styleLabel": "风格",
+    "densityLabel": "密度",
+    "descriptionLabel": "描述",
+    "descriptionPlaceholder": "示例：我想要日式茶园风格，要有锦鲤池、几张坐席和樱花树围合的小径……",
+    "examplesLabel": "灵感提示",
+    "examples": [
+      "日式茶园：锦鲤池 + 石灯笼 + 樱花小径",
+      "森林咖啡角：木桌椅、藤架、暖色街灯",
+      "童话蘑菇营地：帐篷、篝火、蘑菇围炉",
+      "现代极简广场：喷泉、雕塑、铁艺路灯",
+      "田园花园：风车、果园、水井、长椅"
+    ],
+    "startGenerate": "开始生成",
+    "generating": "AI 正在构思…",
+    "regenerate": "换一个",
+    "emptyTitle": "生成结果会出现在这里",
+    "emptyDesc": "选风格 → 描述你想要的场景 → AI 给你一份物品清单和起点布局，可一键应用到画布。",
+    "loadingTitle": "{{model}} 构思中…",
+    "loadingDesc": "通常需要 5-15 秒",
+    "applyToCanvas": "应用到新岛屿",
+    "exportTitle": "ACNH AI 文本生成 - 物品清单",
+    "exportPrompt": "提示词: {{description}}",
+    "designNamePrefix": "AI 岛屿 {{time}}",
+    "descriptionEmpty": "（未填写描述）",
+    "tipsTitle": "提示",
+    "tip1": "尽量给出关键元素（如「锦鲤池」「樱花树」「咖啡桌椅」），AI 命中率更高",
+    "tip2": "想要不同氛围可以多次「换一个」",
+    "tip3": "生成的物品都会进入灵感库，可以反复回看与应用",
+    "errorFallback": "生成失败，请稍后重试。",
+    "sharedNote": "生成结果会自动收藏到灵感库"
+  },
+  "scenes": {
+    "title": "主题快速铺设",
+    "subtitle": "一键放下一组精心搭配的物品，落在画布中心；与已有物品冲突时会自动避让。",
+    "toolbarTitle": "主题快速铺设",
+    "filterAll": "全部",
+    "empty": "当前风格没有可用的主题包，可切到「全部」看看。",
+    "placeHint": "点击放到画布",
+    "placedToast": "已放下「{{name}}」({{count}} 件物品)",
+    "cafeCorner": { "name": "咖啡街角", "desc": "遮阳伞 + 茶几椅 + 街灯花箱，浪漫的露天咖啡座。" },
+    "zenCorner": { "name": "禅意庭院", "desc": "鸟居 + 石灯笼 + 锦鲤池 + 枯山水 + 竹林。" },
+    "kidsPlayground": { "name": "儿童乐园", "desc": "沙坑、秋千、风车与原木长椅围合的小型游乐场。" },
+    "campground": { "name": "森林营地", "desc": "帐篷 + 篝火 + 原木长椅 + 蘑菇 + 松树。" },
+    "modernPlaza": { "name": "现代广场", "desc": "中央喷泉 + 雕塑 + 长椅 + 路灯 + 旗杆。" },
+    "farmYard": { "name": "田园小院", "desc": "风车 + 水井 + 果树 + 花田 + 木长椅。" },
+    "cherryPath": { "name": "樱花小径", "desc": "两侧樱花树 + 园林路灯 + 中央木长椅。" }
   }
 }

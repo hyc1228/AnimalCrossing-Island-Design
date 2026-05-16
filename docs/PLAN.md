@@ -1,7 +1,7 @@
 # 岛屿规划师 · 产品方案
 
 > 最近更新: 2026-05-16
-> 状态: 第二迭代 + 第三迭代第一批完成 · 等待用户反馈
+> 状态: 第二迭代 + 第三迭代第一批 + 第三迭代第二批完成 · 等待用户反馈
 
 ## 一句话定位
 
@@ -118,18 +118,27 @@
 6. **AI 文本驱动生成**（未做）：选风格 + 中文描述 → 规则引擎 + LLM hint
 7. **本地灵感库引入 NH 物品过滤**（待提）：详情页支持只看带 NH 完整匹配的物品
 
+### 第三迭代第二批进度（本批新做）
+1. ✅ **AI 文本生成** `/generate`：选风格 + 密度 + 自由描述 → LLM 出物品清单 + 风格分数 + 起点放置 → 复用 RecognizePage 的"勾选→应用到新岛屿"链路（共享 `components/RecognitionResult/ResultPanel.tsx` + `ai/applyResult.ts`）。文本生成也自动收藏到灵感库；3 家 BYOK provider 都通用；中/英/日 prompt 模板齐备。
+   - 文件：`src/ai/textClient.ts`、`src/ai/applyResult.ts`、`src/components/RecognitionResult/ResultPanel.tsx`、`src/pages/GeneratePage.tsx`
+2. ✅ **主题快速铺设（Scene Packs）**：7 个手工搭配的 4×3 ~ 6×6 小场景（咖啡街角 / 禅意庭院 / 儿童乐园 / 森林营地 / 现代广场 / 田园小院 / 樱花小径），Toolbar 多了"主题快速铺设"按钮；模态弹窗有 SVG 微缩预览 + 按风格过滤；点击后自动选定不与已有物品冲突的中心区域 stamp 下去。
+   - 文件：`src/data/scenePacks.ts`、`src/components/ScenePicker/ScenePicker.tsx`、`src/components/Toolbar/Toolbar.tsx`
+3. ✅ **iPad / 手机适配**：编辑器在 768px 以下首次进入自动收起两侧面板；面板以 `absolute` 浮层呈现，新增点击空白处即关闭的 backdrop；Toolbar 改成响应式（小屏隐藏文字、压缩按钮、设计名输入框 32→48）。
+4. ✅ **画布双指缩放**：IslandCanvas 新增 `onTouchMove/onTouchEnd`，2 指 pinch 触发以指中心为锚点的 scale，单指仍走原 Konva 拖拽逻辑；pinch 时屏蔽放置/绘制 mouseDown，避免误点。
+5. ✅ **i18n 全量补齐**：新增 `home.generateIsland`、`generate.*`、`scenes.*` 三组键 × zh-CN / en / ja。
+
 ## 下一步候选（等用户挑）
 
-第二轮 + 第三轮第一批结束，剩下的候选：
+第二轮 + 第三轮第一批 + 第二批结束，剩下的候选：
 
-1. **AI 文本生成**：选风格 + 中文描述 → LLM 生成放置候选 → 接入「接受/换一个」流程（最大未做项）
-2. **HID 映射扩张**：扩 `hidCatalog.ts` 覆盖更多 HID 子类型（特别是各种花色 → NH 真实花色 itemKey）
-3. **iPad / 手机适配**：编辑器在窄屏下面板抽屉化、画布手势缩放
-4. **NH 物品 fractional size**：NH 数据里 `size.w/h` 是 0.5/1.5 这种浮点；目前一律 ceil 到 1。可以做亚像素布局
-5. **批量物品/主题快速布置**：基于 NH HHA 主题做「一键铺设公园」「一键铺设温泉区」
-6. **画布缩略图**：现在 thumbnail 是整个 stage 截图（包括海洋背景）。可裁剪到岛屿矩形 + 上传 / 下载分享
-7. **灵感库分类 / 标签**：灵感多了之后需要 tags / collections / 搜索
-8. **AI 识别离线 fallback**：BYOK 未配置时用纯 catalogMatcher + 视觉哈希做"近似估计"
+1. **HID 映射扩张**：扩 `hidCatalog.ts` 覆盖更多 HID 子类型（特别是各种花色 → NH 真实花色 itemKey）
+2. **NH 物品 fractional size**：NH 数据里 `size.w/h` 是 0.5/1.5 这种浮点；目前一律 ceil 到 1。可以做亚像素布局
+3. **画布缩略图裁剪**：现在 thumbnail 是整个 stage 截图（包括海洋背景）。可裁剪到岛屿矩形 + 上传 / 下载分享
+4. **灵感库分类 / 标签**：灵感多了之后需要 tags / collections / 搜索
+5. **AI 识别离线 fallback**：BYOK 未配置时用纯 catalogMatcher + 视觉哈希做"近似估计"
+6. **「接受/换一个」流程深化**：现在 GeneratePage 是 1 次生成 → 全量应用；可以做"接受部分 + 再生成补充"的多轮 LLM
+7. **Scene Pack 扩张**：现在 7 个手工搭配；可以根据 NH HHA 主题自动生成更多
+8. **画布手势平移/双击**：iOS Safari pinch 期间会触发系统手势缩放整页；可以加 `touch-action: none` 进一步锁住
 
 ## 技术决策记录
 

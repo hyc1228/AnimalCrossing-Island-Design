@@ -1,15 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   ChevronLeft,
-  Upload,
-  Sparkles,
+  Wand2,
   Settings,
   AlertCircle,
   Loader2,
-  Eye,
-  EyeOff,
+  Sparkles,
+  RefreshCw,
 } from 'lucide-react';
 import {
   Button as AIButton,
@@ -22,7 +21,8 @@ import LanguageSwitcher from '../components/LanguageSwitcher/LanguageSwitcher';
 import ResultPanel from '../components/RecognitionResult/ResultPanel';
 import { useSettingsStore } from '../stores/settingsStore';
 import { useInspirationsStore } from '../stores/inspirationsStore';
-import { recognizeImage, VisionError } from '../ai/visionClient';
+import { generateScene } from '../ai/textClient';
+import { VisionError } from '../ai/visionClient';
 import { applyRecognitionToNewDesign } from '../ai/applyResult';
 import type { RecognitionResult } from '../ai/visionTypes';
 import { STYLES } from '../ai/styles';
@@ -31,16 +31,15 @@ import { styleName } from '../i18n/helpers';
 
 type DensityCode = 'sparse' | 'medium' | 'dense';
 
-export default function RecognizePage() {
+export default function GeneratePage() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const byok = useSettingsStore((s) => s.byok);
   const addInspiration = useInspirationsStore((s) => s.add);
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [dragOver, setDragOver] = useState(false);
+  const [style, setStyle] = useState<StyleId>('japanese');
+  const [density, setDensity] = useState<DensityCode>('medium');
+  const [description, setDescription] = useState('');
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -48,15 +47,16 @@ export default function RecognizePage() {
 
   const [selected, setSelected] = useState<Record<number, boolean>>({});
   const [expandedMatches, setExpandedMatches] = useState<Record<number, boolean>>({});
-  const [showImage, setShowImage] = useState(true);
-
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   const hasKey = byok.apiKey.length > 0;
   const locale =
-    i18n.resolvedLanguage === 'ja' ? 'ja-JP' : i18n.resolvedLanguage === 'en' ? 'en-US' : 'zh-CN';
+    i18n.resolvedLanguage === 'ja'
+      ? 'ja-JP'
+      : i18n.resolvedLanguage === 'en'
+        ? 'en-US'
+        : 'zh-CN';
 
-  // When a result arrives, default-select every item whose best match is reasonable.
   useEffect(() => {
     if (!result) return;
     const next: Record<number, boolean> = {};
@@ -67,30 +67,7 @@ export default function RecognizePage() {
     setExpandedMatches({});
   }, [result]);
 
-  const handleFile = (file: File) => {
-    if (!file.type.startsWith('image/')) {
-      setError(t('recognize.errorNotImage'));
-      return;
-    }
-    setError(null);
-    setResult(null);
-    setImageFile(file);
-    const url = URL.createObjectURL(file);
-    setPreviewUrl((prev) => {
-      if (prev) URL.revokeObjectURL(prev);
-      return url;
-    });
-  };
-
-  // Clean up object URL on unmount.
-  useEffect(() => {
-    return () => {
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-    };
-  }, [previewUrl]);
-
-  const handleRecognize = async () => {
-    if (!imageFile) return;
+  const handleGenerate = async () => {
     if (!hasKey) {
       setSettingsOpen(true);
       return;
@@ -98,23 +75,22 @@ export default function RecognizePage() {
     setLoading(true);
     setError(null);
     try {
-      const r = await recognizeImage(imageFile, byok);
+      const r = await generateScene({ style, description, density }, byok);
       setResult(r);
-      // Auto-save to the local inspirations library (downscaled thumbnail).
-      // Fire-and-forget: never block the UI even if storage fails.
+      // Generated scenes also land in the inspirations library so they're
+      // browsable from the same place as recognized images.
       void addInspiration(r).catch(() => {
-        /* quota or other errors are surfaced lazily by the inspirations page */
+        /* surfaced lazily by inspirations page */
       });
     } catch (e) {
       const msg = e instanceof VisionError ? e.message : (e as Error).message;
-      setError(msg || t('recognize.errorFallback'));
+      setError(msg || t('generate.errorFallback'));
     } finally {
       setLoading(false);
     }
   };
 
   const densityLabel = (d: DensityCode) => t(`recognize.density.${d}`);
-
   const styleLabel = (s: StyleId): string => {
     const def = STYLES.find((x) => x.id === s);
     return def ? `${def.emoji} ${styleName(s, t)}` : s;
@@ -124,7 +100,7 @@ export default function RecognizePage() {
     if (!result) return;
     const picked = result.items.filter((_, i) => selected[i]);
     const lines = [
-      `# ${t('recognize.exportTitle')}`,
+      `# ${t('generate.exportTitle')}`,
       `# ${t('recognize.exportGeneratedAt', { datetime: new Date(result.ranAt).toLocaleString(locale) })}`,
       `# ${t('recognize.exportStyle', {
         styles: result.topStyles
@@ -132,22 +108,20 @@ export default function RecognizePage() {
           .map((s) => `${styleLabel(s.style)}(${(s.score * 100).toFixed(0)}%)`)
           .join(', '),
       })}`,
-      `# ${t('recognize.exportDescription', { description: result.raw.description })}`,
+      `# ${t('generate.exportPrompt', { description: description.trim() || t('generate.descriptionEmpty') })}`,
       `# ${t('recognize.exportDensity', { density: densityLabel(result.raw.density as DensityCode) })}`,
       '',
       ...picked.flatMap((it) => {
         const best = it.matches[0];
         const name = best ? best.name : it.nameEn;
-        return [
-          `- ${name} × ${it.count}${best?.imageUrl ? `  (${best.nameEn})` : ''}`,
-        ];
+        return [`- ${name} × ${it.count}${best?.imageUrl ? `  (${best.nameEn})` : ''}`];
       }),
     ];
     const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `ACNH-${t('recognize.headerTitle')}-${result.ranAt}.txt`;
+    a.download = `ACNH-${t('generate.headerTitle')}-${result.ranAt}.txt`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -156,11 +130,13 @@ export default function RecognizePage() {
     if (!result) return;
     const time = new Date().toLocaleString(locale, { hour: '2-digit', minute: '2-digit' });
     const { designId } = applyRecognitionToNewDesign(result, {
-      designName: t('recognize.designNamePrefix', { time }),
+      designName: t('generate.designNamePrefix', { time }),
       selected,
     });
     navigate(`/editor/${designId}`);
   };
+
+  const examples = (t('generate.examples', { returnObjects: true }) as unknown) as string[];
 
   return (
     <div className="min-h-screen w-full flex flex-col relative">
@@ -169,8 +145,8 @@ export default function RecognizePage() {
           <ChevronLeft size={16} /> {t('common.home')}
         </Link>
         <h1 className="text-lg font-extrabold text-leaf-800 flex items-center gap-2">
-          <AIIcon name="icon-camera" size={26} bounce />
-          {t('recognize.headerTitle')}
+          <AIIcon name="icon-map" size={26} bounce />
+          {t('generate.headerTitle')}
         </h1>
         <div className="flex items-center gap-2">
           <AIButton size="small" onClick={() => setSettingsOpen(true)} icon={<Settings size={14} />}>
@@ -188,7 +164,12 @@ export default function RecognizePage() {
               <h3 className="font-extrabold text-sm">{t('recognize.noKeyTitle')}</h3>
               <p className="text-xs mt-0.5 leading-relaxed opacity-90">{t('recognize.noKeyDesc')}</p>
               <div className="mt-2">
-                <AIButton size="small" type="primary" onClick={() => setSettingsOpen(true)} icon={<Settings size={14} />}>
+                <AIButton
+                  size="small"
+                  type="primary"
+                  onClick={() => setSettingsOpen(true)}
+                  icon={<Settings size={14} />}
+                >
                   {t('recognize.noKeyCta')}
                 </AIButton>
               </div>
@@ -197,89 +178,120 @@ export default function RecognizePage() {
         )}
 
         <div className="grid lg:grid-cols-5 gap-5">
-          {/* Left: upload + preview */}
+          {/* Left: prompt builder */}
           <section className="lg:col-span-2 space-y-3">
-            <div
-              onDragOver={(e) => {
-                e.preventDefault();
-                setDragOver(true);
-              }}
-              onDragLeave={() => setDragOver(false)}
-              onDrop={(e) => {
-                e.preventDefault();
-                setDragOver(false);
-                const f = e.dataTransfer.files?.[0];
-                if (f) handleFile(f);
-              }}
-              onClick={() => fileInputRef.current?.click()}
-              className={`card cursor-pointer overflow-hidden transition-all ${
-                dragOver ? 'ring-2 ring-mint-300 -translate-y-0.5' : ''
-              }`}
-              style={dragOver ? { borderColor: '#19c8b9' } : undefined}
-            >
-              {previewUrl && showImage ? (
-                <div className="relative">
-                  <img src={previewUrl} alt="preview" className="w-full max-h-[420px] object-contain bg-cream-100" />
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setShowImage(false);
-                    }}
-                    className="absolute top-2 right-2 panel w-9 h-9 grid place-items-center text-leaf-700 hover:text-mint-600"
-                    title={t('recognize.hideImage')}
-                  >
-                    <EyeOff size={14} />
-                  </button>
+            <AICard className="!p-4 space-y-3">
+              <div>
+                <label className="text-xs font-extrabold text-leaf-800 uppercase tracking-wider">
+                  {t('generate.styleLabel')}
+                </label>
+                <div className="mt-2 grid grid-cols-5 gap-1.5">
+                  {STYLES.map((s) => {
+                    const active = style === s.id;
+                    return (
+                      <button
+                        key={s.id}
+                        onClick={() => setStyle(s.id)}
+                        className={`flex flex-col items-center gap-0.5 p-2 rounded-2xl border-2 text-[11px] font-bold transition ${
+                          active
+                            ? 'border-mint-500 bg-mint-50 text-leaf-800'
+                            : 'border-cream-200 bg-white text-leaf-700 hover:border-mint-300'
+                        }`}
+                        style={active ? { boxShadow: '0 3px 0 0 #11a89b' } : { boxShadow: '0 2px 0 0 #e0d8c0' }}
+                        title={s.description}
+                      >
+                        <span className="text-xl leading-none">{s.emoji}</span>
+                        <span className="leading-tight text-center">{styleName(s.id, t)}</span>
+                      </button>
+                    );
+                  })}
                 </div>
-              ) : previewUrl ? (
-                <div className="relative h-32 bg-cream-100 grid place-items-center">
-                  <AIButton
-                    size="small"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setShowImage(true);
-                    }}
-                    icon={<Eye size={14} />}
-                  >
-                    {t('recognize.showImage')}
-                  </AIButton>
+              </div>
+
+              <div>
+                <label className="text-xs font-extrabold text-leaf-800 uppercase tracking-wider">
+                  {t('generate.densityLabel')}
+                </label>
+                <div className="mt-2 flex gap-1.5">
+                  {(['sparse', 'medium', 'dense'] as const).map((d) => {
+                    const active = density === d;
+                    return (
+                      <button
+                        key={d}
+                        onClick={() => setDensity(d)}
+                        className={`flex-1 px-3 py-1.5 rounded-full text-xs font-bold border-2 transition ${
+                          active
+                            ? 'border-mint-500 bg-mint-50 text-leaf-800'
+                            : 'border-cream-200 bg-white text-leaf-700 hover:border-mint-300'
+                        }`}
+                        style={active ? { boxShadow: '0 2px 0 0 #11a89b' } : undefined}
+                      >
+                        {densityLabel(d)}
+                      </button>
+                    );
+                  })}
                 </div>
-              ) : (
-                <div className="aspect-[4/3] grid place-items-center text-center p-6">
-                  <div>
-                    <div className="w-14 h-14 rounded-full bg-mint-100 text-mint-600 grid place-items-center mx-auto mb-3">
-                      <Upload size={22} />
-                    </div>
-                    <p className="font-extrabold text-leaf-800 text-base">{t('recognize.uploadPrompt')}</p>
-                    <p className="text-xs text-leaf-600 mt-2 whitespace-pre-line leading-relaxed">
-                      {t('recognize.uploadDesc')}
-                    </p>
+              </div>
+
+              <div>
+                <label className="text-xs font-extrabold text-leaf-800 uppercase tracking-wider">
+                  {t('generate.descriptionLabel')}
+                </label>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  rows={4}
+                  placeholder={t('generate.descriptionPlaceholder')}
+                  className="input mt-2 text-sm py-2 resize-none"
+                />
+                <div className="text-[10px] text-leaf-500 mt-1 text-right">
+                  {description.length} / 500
+                </div>
+              </div>
+
+              {Array.isArray(examples) && examples.length > 0 && (
+                <div>
+                  <div className="text-[11px] font-bold text-leaf-700 mb-1.5">
+                    {t('generate.examplesLabel')}
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {examples.slice(0, 5).map((ex, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setDescription(ex)}
+                        className="chip text-[11px] hover:-translate-y-0.5 transition-transform"
+                        title={ex}
+                      >
+                        {ex.length > 22 ? ex.slice(0, 22) + '…' : ex}
+                      </button>
+                    ))}
                   </div>
                 </div>
               )}
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                hidden
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) handleFile(f);
-                  e.target.value = '';
-                }}
-              />
-            </div>
+            </AICard>
 
             <AIButton
               type="primary"
               size="large"
               block
               loading={loading}
-              disabled={!imageFile || loading}
-              onClick={handleRecognize}
-              icon={loading ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
+              disabled={loading}
+              onClick={handleGenerate}
+              icon={
+                loading ? (
+                  <Loader2 size={16} className="animate-spin" />
+                ) : result ? (
+                  <RefreshCw size={16} />
+                ) : (
+                  <Wand2 size={16} />
+                )
+              }
             >
-              {loading ? t('recognize.recognizing') : t('recognize.startRecognize')}
+              {loading
+                ? t('generate.generating')
+                : result
+                  ? t('generate.regenerate')
+                  : t('generate.startGenerate')}
             </AIButton>
 
             {error && (
@@ -291,13 +303,12 @@ export default function RecognizePage() {
 
             <AICard className="!p-3 text-[11px] text-leaf-700 leading-relaxed">
               <p>
-                <strong className="text-leaf-800">{t('recognize.tipsTitle')}</strong>
+                <strong className="text-leaf-800">{t('generate.tipsTitle')}</strong>
               </p>
               <ul className="mt-1 space-y-0.5 list-disc list-inside">
-                <li>{t('recognize.tip1')}</li>
-                <li>{t('recognize.tip2')}</li>
-                <li>{t('recognize.tip3')}</li>
-                <li>{t('recognize.tip4')}</li>
+                <li>{t('generate.tip1')}</li>
+                <li>{t('generate.tip2')}</li>
+                <li>{t('generate.tip3')}</li>
               </ul>
             </AICard>
           </section>
@@ -308,10 +319,12 @@ export default function RecognizePage() {
               <AICard className="!p-8 h-full grid place-items-center text-center">
                 <div>
                   <div className="mb-3 grid place-items-center">
-                    <AIIcon name="icon-camera" size={64} />
+                    <AIIcon name="icon-map" size={64} />
                   </div>
-                  <h3 className="font-extrabold text-leaf-800">{t('recognize.emptyTitle')}</h3>
-                  <p className="text-sm text-leaf-600 mt-1 leading-relaxed">{t('recognize.emptyDesc')}</p>
+                  <h3 className="font-extrabold text-leaf-800">{t('generate.emptyTitle')}</h3>
+                  <p className="text-sm text-leaf-600 mt-1 leading-relaxed">
+                    {t('generate.emptyDesc')}
+                  </p>
                 </div>
               </AICard>
             )}
@@ -320,8 +333,10 @@ export default function RecognizePage() {
               <AICard className="!p-8 h-full grid place-items-center text-center">
                 <div>
                   <Loader2 size={28} className="text-mint-500 animate-spin mx-auto mb-3" />
-                  <h3 className="font-extrabold text-leaf-800">{t('recognize.loadingTitle', { model: byok.model })}</h3>
-                  <p className="text-sm text-leaf-600 mt-1">{t('recognize.loadingDesc')}</p>
+                  <h3 className="font-extrabold text-leaf-800">
+                    {t('generate.loadingTitle', { model: byok.model })}
+                  </h3>
+                  <p className="text-sm text-leaf-600 mt-1">{t('generate.loadingDesc')}</p>
                 </div>
               </AICard>
             )}
@@ -337,13 +352,21 @@ export default function RecognizePage() {
                 onApply={applyToCanvas}
                 densityLabel={densityLabel}
                 styleLabel={styleLabel}
+                applyLabel={t('generate.applyToCanvas')}
               />
             )}
           </section>
         </div>
+
+        {/* Subtle hint that the generator and recognizer share infra */}
+        {!result && (
+          <div className="mt-6 flex items-center justify-center gap-2 text-xs text-leaf-600">
+            <Sparkles size={12} className="text-mint-500" />
+            <span>{t('generate.sharedNote')}</span>
+          </div>
+        )}
       </main>
 
-      {/* Decorative bottom band */}
       <div className="fixed inset-x-0 bottom-0 pointer-events-none z-0">
         <AIFooter type="sea" />
       </div>
@@ -352,6 +375,3 @@ export default function RecognizePage() {
     </div>
   );
 }
-
-// Result rendering moved to components/RecognitionResult/ResultPanel.tsx so
-// the generation page can share the exact same UI.

@@ -16,6 +16,7 @@ import {
   Clipboard,
   Copy,
   X,
+  LayoutTemplate,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -25,6 +26,7 @@ import { useCanvasStore } from '../../stores/canvasStore';
 import { useUIStore } from '../../stores/uiStore';
 import { TERRAIN } from '../../types';
 import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
+import ScenePicker from '../ScenePicker/ScenePicker';
 import { exportCanvasPng, downloadDataUrl } from '../../utils/canvasHandle';
 import { buildShareUrl } from '../../utils/shareDesign';
 
@@ -66,6 +68,7 @@ export default function Toolbar() {
 
   const [toast, setToast] = useState<string | null>(null);
   const [shareOpen, setShareOpen] = useState(false);
+  const [scenesOpen, setScenesOpen] = useState(false);
 
   const isTerrainTool = tool === 'terrain-brush' || tool === 'terrain-rect';
 
@@ -124,15 +127,16 @@ export default function Toolbar() {
   const handleShareUrl = () => setShareOpen(true);
 
   return (
-    <div className="panel mx-3 mt-3 p-2 flex items-center gap-2 flex-wrap">
-      <button onClick={() => navigate('/')} className="btn-ghost text-sm" title={t('common.home')}>
-        <ChevronLeft size={16} /> {t('common.home')}
+    <div className="panel mx-3 mt-3 p-2 flex items-center gap-1.5 md:gap-2 flex-wrap">
+      <button onClick={() => navigate('/')} className="btn-ghost text-sm shrink-0" title={t('common.home')}>
+        <ChevronLeft size={16} />
+        <span className="hidden sm:inline ml-0.5">{t('common.home')}</span>
       </button>
 
       <input
         value={designName}
         onChange={(e) => renameDesign(e.target.value)}
-        className="input text-sm py-1.5 w-48"
+        className="input text-sm py-1.5 w-32 md:w-48 min-w-0"
         style={{ borderWidth: 2, boxShadow: '0 2px 0 0 #d4c9b4' }}
       />
 
@@ -175,6 +179,9 @@ export default function Toolbar() {
       <ToolBtn active={showGrid} onClick={toggleGrid} title={t('toolbar.toggleGrid')}>
         <Grid3x3 size={16} />
       </ToolBtn>
+      <ToolBtn onClick={() => setScenesOpen(true)} title={t('scenes.toolbarTitle')}>
+        <LayoutTemplate size={16} />
+      </ToolBtn>
 
       <div className="w-px h-6 bg-cream-300 mx-1" />
 
@@ -192,14 +199,15 @@ export default function Toolbar() {
         onClick={() => {
           if (confirm(t('editor.clearConfirm'))) clearAll();
         }}
-        className="btn-ghost text-sm text-red-600 hover:bg-red-50"
+        className="btn-ghost text-sm text-red-600 hover:bg-red-50 shrink-0"
         title={t('editor.clearAll')}
       >
-        {t('editor.clearAll')}
+        <Trash2 size={14} className="md:hidden" />
+        <span className="hidden md:inline">{t('editor.clearAll')}</span>
       </button>
 
-      <div className="ml-auto flex items-center gap-2">
-        <span className="flex items-center gap-1 text-xs text-leaf-600">
+      <div className="ml-auto flex items-center gap-2 shrink-0">
+        <span className="hidden md:flex items-center gap-1 text-xs text-leaf-600">
           <Save size={14} />
           {t('editor.autoSaved')}
         </span>
@@ -256,6 +264,12 @@ export default function Toolbar() {
           onCopied={() => pushToast(t('editor.shareUrlCopied'))}
         />
       )}
+
+      <ScenePicker
+        open={scenesOpen}
+        onClose={() => setScenesOpen(false)}
+        onPlaced={(msg) => pushToast(msg)}
+      />
     </div>
   );
 }

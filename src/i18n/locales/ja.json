@@ -29,6 +29,7 @@
     "continueLast": "前回の続き",
     "browseTemplates": "テンプレートを見る",
     "recognizeImage": "画像から認識",
+    "generateIsland": "AIテキスト生成",
     "features": {
       "recognize": {
         "title": "画像から認識",
@@ -40,8 +41,9 @@
         "desc": "80×70のトップビュー・グリッドと4つのレイヤー。地形・道・家具を自由に配置。"
       },
       "ai": {
-        "title": "AIレイアウト提案",
-        "desc": "スタイルを選ぶだけ。AIが島全体または選択範囲のレイアウトを自動生成します。"
+        "title": "AIテキスト生成",
+        "desc": "理想の島を一文で伝えるだけ。AIがアイテムリストと配置案を出してくれます。",
+        "badge": "新"
       },
       "preview": {
         "title": "3Dプレビュー",
@@ -458,5 +460,54 @@
     "errorNoPayload": "PNG 内に HID データが見つかりません。HID 純正の書き出しではない、またはスクショ / JPEG 化により隠しデータが失われた可能性があります。",
     "errorCorrupt": "隠しデータが破損しているか、HID 形式ではありません。",
     "errorImage": "画像を読み込めませんでした。別のファイルをお試しください。"
+  },
+  "generate": {
+    "headerTitle": "AIテキスト生成",
+    "styleLabel": "スタイル",
+    "densityLabel": "密度",
+    "descriptionLabel": "説明",
+    "descriptionPlaceholder": "例：和風の茶庭が欲しい、錦鯉の池とちょっとした座席、桜並木の小径……",
+    "examplesLabel": "ヒント",
+    "examples": [
+      "和風茶庭：錦鯉の池 + 石灯籠 + 桜並木の小径",
+      "森のカフェコーナー：木のテーブル椅子、パーゴラ、暖色の街灯",
+      "おとぎ話のキノコ野営地：テント、たき火、キノコ円",
+      "モダン広場：噴水、彫刻、鉄製街灯",
+      "田園ガーデン：風車、果樹、井戸、ベンチ"
+    ],
+    "startGenerate": "生成する",
+    "generating": "AIが構想中…",
+    "regenerate": "別の案",
+    "emptyTitle": "生成結果はここに表示されます",
+    "emptyDesc": "スタイルを選び → 描いてほしい雰囲気を入力 → AIがアイテムリストと初期配置を返します。新しい島にワンクリックで適用できます。",
+    "loadingTitle": "{{model}} が考え中…",
+    "loadingDesc": "通常 5〜15 秒",
+    "applyToCanvas": "新しい島に適用",
+    "exportTitle": "ACNH AIテキスト生成 - アイテムリスト",
+    "exportPrompt": "プロンプト: {{description}}",
+    "designNamePrefix": "AI 島 {{time}}",
+    "descriptionEmpty": "（説明なし）",
+    "tipsTitle": "コツ",
+    "tip1": "キーワード（「錦鯉の池」「桜の木」「カフェチェア」など）を入れると的中率が大幅にアップ。",
+    "tip2": "雰囲気を変えたいときは「別の案」を何度でも。",
+    "tip3": "生成結果はライブラリに自動保存されます。",
+    "errorFallback": "生成に失敗しました。しばらくしてから再試行してください。",
+    "sharedNote": "生成結果はライブラリに自動保存されます"
+  },
+  "scenes": {
+    "title": "シーンパック",
+    "subtitle": "厳選されたアイテム群をワンクリックでキャンバスに配置。既存アイテムとの衝突は自動で回避します。",
+    "toolbarTitle": "シーンパック",
+    "filterAll": "すべて",
+    "empty": "このスタイルにマッチするパックはありません。「すべて」を試してみてください。",
+    "placeHint": "タップしてキャンバスに配置",
+    "placedToast": "「{{name}}」を配置しました（{{count}} 件）",
+    "cafeCorner": { "name": "カフェコーナー", "desc": "パラソル + 茶テーブル + カフェチェア + 街灯 + 花箱。" },
+    "zenCorner": { "name": "禅の庭", "desc": "鳥居 + 石灯籠 + 錦鯉池 + 枯山水 + 竹。" },
+    "kidsPlayground": { "name": "子ども広場", "desc": "砂場、ブランコ、風車、ログベンチ。" },
+    "campground": { "name": "森の野営地", "desc": "テント + たき火 + ログベンチ + キノコ + 松。" },
+    "modernPlaza": { "name": "モダン広場", "desc": "中央噴水 + 彫刻 + ベンチ + 街灯 + 旗ポール。" },
+    "farmYard": { "name": "田園の庭", "desc": "風車 + 井戸 + 果樹 + 花畑 + ベンチ。" },
+    "cherryPath": { "name": "桜並木", "desc": "桜の木 + 庭園街灯 + 中央のベンチ。" }
   }
 }

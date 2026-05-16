@@ -8,6 +8,7 @@ import HomePage from './pages/HomePage';
 const EditorPage = lazy(() => import('./pages/EditorPage'));
 const GalleryPage = lazy(() => import('./pages/GalleryPage'));
 const RecognizePage = lazy(() => import('./pages/RecognizePage'));
+const GeneratePage = lazy(() => import('./pages/GeneratePage'));
 const InspirationsPage = lazy(() => import('./pages/InspirationsPage'));
 const ImportHidPage = lazy(() => import('./pages/ImportHidPage'));
 
@@ -30,6 +31,7 @@ export default function App() {
         <Route path="/editor/:id" element={<EditorPage />} />
         <Route path="/gallery" element={<GalleryPage />} />
         <Route path="/recognize" element={<RecognizePage />} />
+        <Route path="/generate" element={<GeneratePage />} />
         <Route path="/inspirations" element={<InspirationsPage />} />
         <Route path="/import-hid" element={<ImportHidPage />} />
       </Routes>

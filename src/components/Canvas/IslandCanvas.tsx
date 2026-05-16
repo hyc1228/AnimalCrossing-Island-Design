@@ -116,6 +116,70 @@ export default function IslandCanvas({ width, height }: IslandCanvasProps) {
     });
   };
 
+  // ----- Touch / pinch support -----
+  // We use refs (not state) to avoid render churn on every touchmove.
+  const pinchLastDistRef = useRef<number | null>(null);
+  const pinchActiveRef = useRef(false);
+
+  const touchDistance = (t1: Touch, t2: Touch) => {
+    const dx = t1.clientX - t2.clientX;
+    const dy = t1.clientY - t2.clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+
+  const handleTouchMove = (e: Konva.KonvaEventObject<TouchEvent>) => {
+    const touches = e.evt.touches;
+    if (touches.length !== 2) return;
+    e.evt.preventDefault();
+    const stage = stageRef.current;
+    if (!stage) return;
+    pinchActiveRef.current = true;
+
+    const t1 = touches[0];
+    const t2 = touches[1];
+    const dist = touchDistance(t1, t2);
+    if (pinchLastDistRef.current == null) {
+      pinchLastDistRef.current = dist;
+      return;
+    }
+
+    const ratio = dist / pinchLastDistRef.current;
+    if (Math.abs(ratio - 1) < 0.005) return;
+
+    const box = stage.container().getBoundingClientRect();
+    const centerClient = {
+      x: (t1.clientX + t2.clientX) / 2,
+      y: (t1.clientY + t2.clientY) / 2,
+    };
+    const pointer = { x: centerClient.x - box.left, y: centerClient.y - box.top };
+
+    const oldScale = scale;
+    const mousePointTo = {
+      x: (pointer.x - stagePos.x) / oldScale,
+      y: (pointer.y - stagePos.y) / oldScale,
+    };
+    const newScale = Math.max(0.4, Math.min(3, oldScale * ratio));
+    setScale(newScale);
+    setStagePos({
+      x: pointer.x - mousePointTo.x * newScale,
+      y: pointer.y - mousePointTo.y * newScale,
+    });
+    pinchLastDistRef.current = dist;
+  };
+
+  const handleTouchEnd = (e: Konva.KonvaEventObject<TouchEvent>) => {
+    // Reset when fewer than two fingers remain.
+    if (e.evt.touches.length < 2) {
+      pinchLastDistRef.current = null;
+    }
+    if (e.evt.touches.length === 0) {
+      // Small delay so a tap after pinch doesn't get treated as a place/select.
+      window.setTimeout(() => {
+        pinchActiveRef.current = false;
+      }, 80);
+    }
+  };
+
   const applyBrush = useCallback(
     (cx: number, cy: number) => {
       const half = Math.floor(brushSize / 2);
@@ -134,6 +198,7 @@ export default function IslandCanvas({ width, height }: IslandCanvasProps) {
 
   const handleMouseDown = (e: Konva.KonvaEventObject<MouseEvent>) => {
     if (e.evt.button === 1 || e.evt.button === 2) return;
+    if (pinchActiveRef.current) return;
     const cell = pointerToCell();
     if (!cell) return;
 
@@ -344,6 +409,8 @@ export default function IslandCanvas({ width, height }: IslandCanvasProps) {
           setHoverCell(null);
           setIsPainting(false);
         }}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         {/* Island shadow (soft drop) */}
         <Layer listening={false}>
