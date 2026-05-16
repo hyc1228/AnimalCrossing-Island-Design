@@ -151,7 +151,7 @@ export default function InspirationsPage() {
 
   return (
     <div className="min-h-screen w-full flex flex-col relative">
-      <header className="px-6 lg:px-12 py-5 flex items-center justify-between flex-wrap gap-3 border-b-2 border-cream-200 bg-cream-50/70 backdrop-blur-sm relative z-10">
+      <header className="px-6 lg:px-12 py-5 flex items-center justify-between flex-wrap gap-3 border-b-2 border-cream-200 bg-cream-50/70 backdrop-blur-sm relative z-20">
         <Link to="/" className="btn-ghost text-sm">
           <ChevronLeft size={16} /> {t('common.home')}
         </Link>

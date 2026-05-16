@@ -9,6 +9,7 @@ import { SCENE_PACKS, packToPlacedItems, type ScenePack } from '../../data/scene
 import { useCanvasStore } from '../../stores/canvasStore';
 import { ITEMS_BY_KEY } from '../../data/items';
 import { canPlace } from '../../utils/grid';
+import { styleName } from '../../i18n/helpers';
 import type { PlacedItem } from '../../types';
 import type { StyleId } from '../../ai/types';
 
@@ -129,9 +130,7 @@ export default function ScenePicker({ open, onClose, onPlaced }: Props) {
                 style={active ? { boxShadow: '0 2px 0 0 #11a89b' } : undefined}
               >
                 <span className="mr-1">{f.emoji}</span>
-                {f.id === 'all'
-                  ? t('scenes.filterAll')
-                  : t(`styles.${f.id}` as 'styles.japanese')}
+                {f.id === 'all' ? t('scenes.filterAll') : styleName(f.id, t)}
               </button>
             );
           })}

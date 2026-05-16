@@ -68,7 +68,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen w-full flex flex-col relative">
-      <header className="px-6 lg:px-12 py-6 flex items-center justify-between flex-wrap gap-3 relative z-10">
+      <header className="px-6 lg:px-12 py-6 flex items-center justify-between flex-wrap gap-3 relative z-20">
         <div className="flex items-center gap-3">
           <span className="grid place-items-center w-12 h-12 rounded-2xl bg-mint-500" style={{ boxShadow: '0 4px 0 0 #11a89b' }}>
             <AIIcon name="icon-helicopter" size={28} style={{ filter: 'brightness(0) invert(1)' }} />
